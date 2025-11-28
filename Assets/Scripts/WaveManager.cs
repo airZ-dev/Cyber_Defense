@@ -35,7 +35,7 @@ public class WaveManager : MonoBehaviour
     private int enemiesAlive;
     private int enemiesLeftToSpawn;
     private bool isSpawning = false;
-    private bool firstWave = true;
+    private bool firstWave = true; 
     private float currentTimebtwWaves;
 
 
@@ -47,12 +47,23 @@ public class WaveManager : MonoBehaviour
     }
     private void OnGUI()
     {
-        txt.text = "текущая волна: 0/" + enemyTypeWaves.Length + ".\nВрагов: " + enemiesAlive +
-        ".\nДо следующей волны " + (firstWave ? 0 : Mathf.RoundToInt(currentTimebtwWaves))  + "сек.";
+        if (txt != null)
+        {
+            txt.text = "текущая волна: 0/" + enemyTypeWaves.Length + ".\nВрагов: " + enemiesAlive +
+            ".\nДо следующей волны " + (firstWave ? 0 : Mathf.RoundToInt(currentTimebtwWaves)) + "сек.";
+        }
     }
 
     private void Update()
     {
+        //закоментить
+        {
+            if(firstWave)
+            {
+                firstWave = false;
+                StartCoroutine(StartWave());
+            }
+        }
         if (!firstWave)
         {
             if (!isSpawning)
@@ -133,9 +144,9 @@ public class WaveManager : MonoBehaviour
     {
         yield return new WaitForSeconds(timeBtwWave);
         isSpawning = true;
-        if (currentWave-1 == enemyCount.Length)
+        if (currentWave-1 >= enemyCount.Length)
         {
-            deathMenu.instance.winOrLoseWindowShow(true);
+            //deathMenu.instance.winOrLoseWindowShow(true);
             yield break;
         }
         enemiesLeftToSpawn = enemyCount[currentWave - 1];

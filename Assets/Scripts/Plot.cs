@@ -146,8 +146,6 @@ public class Plot : MonoBehaviour
 
     void OnTileHover(Vector3Int cellPos)
     {
-        Debug.Log($"Наведение на тайл: {cellPos}");
-
         if (tilemap.HasTile(lastHoveredCell))
         {
             ResetTileColor(lastHoveredCell);
@@ -159,24 +157,22 @@ public class Plot : MonoBehaviour
 
     void OnTileClick(Vector3Int cellPos)
     {
-        Debug.Log($"Клик по тайлу: {cellPos}");
         if (towers.ContainsKey(cellPos))
         {
-            Debug.Log("Тайл занят! Нельзя построить башню.");
+            Debug.Log("открывается меню для улучшения пушки");
             return;
         }
         Vector3 worldpos = tilemap.GetCellCenterLocal(cellPos);
         Tower new_tower = BuildManager.Instance.getSelectedTower();
         if (new_tower == null)
         {
-            Debug.Log("Вы не выбрали башню");
+            Debug.Log("открывается меню для выбора пушки");
             return;
         }
         if (new_tower.cost > LevelManager.instance.currency)
         {
             Debug.Log("Денег нет");
             return;
-
         }
         LevelManager.instance.SpendCurrency(new_tower.cost);
         GameObject tower = Instantiate(new_tower.prefab, worldpos, Quaternion.identity);

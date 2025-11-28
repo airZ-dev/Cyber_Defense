@@ -14,7 +14,7 @@ public class LevelManager : MonoBehaviour
     private int currentHP;
 
     [SerializeField] public int currency;
-    [SerializeField] private int baseHP = 100;
+    [SerializeField] private int baseHP;
     [SerializeField] private Image _hp;
    
 
@@ -28,7 +28,7 @@ public class LevelManager : MonoBehaviour
     {
         if(currency == 0)
         {
-            currency = 100;
+            currency = 48*2;
         }
         isStop = true;
     }
