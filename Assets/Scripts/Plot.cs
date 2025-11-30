@@ -40,7 +40,7 @@ public class Plot : MonoBehaviour
         if (!enableTileSelection)
             return;
 
-        // Проверяем не над UI ли курсор (с дополнительными проверками)
+        // Проверяем не над UI ли курсор
         if (IsPointerOverUIElement())
             return;
 
@@ -162,23 +162,18 @@ public class Plot : MonoBehaviour
             Debug.Log("открывается меню для улучшения пушки");
             return;
         }
-        Vector3 worldpos = tilemap.GetCellCenterLocal(cellPos);
-        Tower new_tower = BuildManager.Instance.getSelectedTower();
-        if (new_tower == null)
-        {
-            Debug.Log("открывается меню для выбора пушки");
-            return;
-        }
-        if (new_tower.cost > LevelManager.instance.currency)
-        {
-            Debug.Log("Денег нет");
-            return;
-        }
-        LevelManager.instance.SpendCurrency(new_tower.cost);
-        GameObject tower = Instantiate(new_tower.prefab, worldpos, Quaternion.identity);
-        towers[cellPos] = tower;
 
+        TowerSelectionUI selectionUI = FindFirstObjectByType<TowerSelectionUI>();
+        if (selectionUI != null)
+        {
+            selectionUI.ShowSelectionPanel(cellPos);
+        }
+        else
+        {
+            Debug.LogError("TowerSelectionUI не найден на сцене!");
+        }
     }
+
     void ResetTileColor(Vector3Int cellPos)
     {
         tilemap.SetColor(cellPos, Color.white);
