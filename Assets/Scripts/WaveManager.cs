@@ -26,16 +26,20 @@ public class WaveManager : MonoBehaviour
     public static UnityEvent<int> onEnemyReachedEnd = new UnityEvent<int>();
 
     [Header("Ссылки")]
-    [SerializeField] private TextMeshProUGUI txt;
+    [SerializeField] private UnityEngine.UI.Button startWaveButton;
 
-    private int currentWave = 1;
+    private int currentWave = 0;
     private float timeSinceLastSpawn;
     public static WaveManager instance;
     public float despawnScaleDuration { get { return _despawnScaleDuration; } private set { } }
     private int enemiesAlive;
     private int enemiesLeftToSpawn;
     private bool isSpawning = false;
-    private bool firstWave = true; 
+    private bool waitForStart = true;
+    public bool IsGameStarted
+    {
+        get { return !waitForStart; }
+    }
     private float currentTimebtwWaves;
 
 
@@ -44,27 +48,16 @@ public class WaveManager : MonoBehaviour
         instance = this;
         currentTimebtwWaves = timeBtwWave;
         onEnemyDestroy.AddListener(EnemyDestroed);
-    }
-    private void OnGUI()
-    {
-        if (txt != null)
+
+        if (startWaveButton != null)
         {
-            txt.text = "текущая волна: 0/" + enemyTypeWaves.Length + ".\nВрагов: " + enemiesAlive +
-            ".\nДо следующей волны " + (firstWave ? 0 : Mathf.RoundToInt(currentTimebtwWaves)) + "сек.";
+            startWaveButton.onClick.AddListener(StartButtonAction);
         }
     }
 
     private void Update()
     {
-        //закоментить
-        {
-            if(firstWave)
-            {
-                firstWave = false;
-                StartCoroutine(StartWave());
-            }
-        }
-        if (!firstWave)
+        if (!waitForStart)
         {
             if (!isSpawning)
             {
@@ -91,15 +84,11 @@ public class WaveManager : MonoBehaviour
     }
     public void StartButtonAction()
     {
-        if (firstWave)
+        if (waitForStart && !isSpawning)
         {
-            firstWave = false;
+            waitForStart = false;
+            StartCoroutine(StartWave());
         }
-        if (isSpawning)
-        {
-            return;
-        }
-        StartCoroutine(StartWave());
     }
     private void EnemyDestroed()
     {
@@ -111,12 +100,18 @@ public class WaveManager : MonoBehaviour
         timeSinceLastSpawn = 0f;
         ++currentWave;
         currentTimebtwWaves = timeBtwWave;
-        StartCoroutine(StartWave());
+        waitForStart = true;
+        if (currentWave >= enemyTypeWaves.Length)
+        {
+            Debug.Log("Все волны завершены!");
+        }
     }
 
     private void SpawnEnemy()
     {
-        GameObject prefabToSpawn = enemyTypeWaves[currentWave-1];
+        if (currentWave >= enemyTypeWaves.Length) 
+            return;
+        GameObject prefabToSpawn = enemyTypeWaves[currentWave];
         GameObject enemy = Instantiate(prefabToSpawn, LevelManager.instance.startPoint.position, Quaternion.identity);
         StartCoroutine(ScaleEnemyOnSpawn(enemy.transform));
     }
@@ -144,12 +139,11 @@ public class WaveManager : MonoBehaviour
     {
         yield return new WaitForSeconds(timeBtwWave);
         isSpawning = true;
-        if (currentWave-1 >= enemyCount.Length)
+        if (currentWave >= enemyCount.Length)
         {
-            //deathMenu.instance.winOrLoseWindowShow(true);
             yield break;
         }
-        enemiesLeftToSpawn = enemyCount[currentWave - 1];
+        enemiesLeftToSpawn = enemyCount[currentWave];
         
     }
 
