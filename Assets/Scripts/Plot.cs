@@ -157,6 +157,12 @@ public class Plot : MonoBehaviour
 
     void OnTileClick(Vector3Int cellPos)
     {
+        if (!WaveManager.instance.IsGameStarted)
+        {
+            Debug.Log("Сначала начните волну!");
+            return;
+        }
+
         if (towers.ContainsKey(cellPos))
         {
             Debug.Log("открывается меню для улучшения пушки");
