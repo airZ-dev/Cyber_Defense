@@ -20,7 +20,6 @@ public class Plot : MonoBehaviour
     private Vector3Int lastHoveredCell;
     private Camera mainCamera;
     private Dictionary<Vector3Int, GameObject> towers;
-
     // События для внешних скриптов
     public Action<Vector3Int> OnTileHovered;
     public Action<Vector3Int> OnTileClicked;
@@ -28,18 +27,17 @@ public class Plot : MonoBehaviour
     void Start()
     {
         mainCamera = Camera.main;
-        towers = new Dictionary<Vector3Int, GameObject>();
         if (tilemap == null)
         {
             tilemap = GetComponent<Tilemap>();
         }
+        towers = BuildManager.Instance.dict;
     }
 
     void Update()
     {
         if (!enableTileSelection)
             return;
-
         // Проверяем не над UI ли курсор
         if (IsPointerOverUIElement())
             return;
@@ -95,12 +93,12 @@ public class Plot : MonoBehaviour
             return;
 
         Vector3Int cellPos = tilemap.WorldToCell(mouseWorldPos);
-
+        towers = BuildManager.Instance.dict;
         if (tilemap.HasTile(cellPos))
         {
             if (cellPos != lastHoveredCell)
             {
-                OnTileHover(cellPos);
+                //OnTileHover(cellPos);
                 lastHoveredCell = cellPos;
             }
 
@@ -113,6 +111,7 @@ public class Plot : MonoBehaviour
         {
             if (tilemap.HasTile(lastHoveredCell))
             {
+                if (towers.ContainsKey(lastHoveredCell)) towers[lastHoveredCell].GetComponent<basic_turret>().HideRange();
                 ResetTileColor(lastHoveredCell);
                 lastHoveredCell = new Vector3Int(int.MaxValue, int.MaxValue, int.MaxValue);
             }
@@ -144,7 +143,7 @@ public class Plot : MonoBehaviour
         }
     }
 
-    void OnTileHover(Vector3Int cellPos)
+    /*void OnTileHover(Vector3Int cellPos)
     {
         if (tilemap.HasTile(lastHoveredCell))
         {
@@ -153,26 +152,33 @@ public class Plot : MonoBehaviour
 
         tilemap.SetColor(cellPos, hoverColor);
         OnTileHovered?.Invoke(cellPos);
-    }
+    }*/
 
     void OnTileClick(Vector3Int cellPos)
     {
-        if (!WaveManager.instance.IsGameStarted)
+        /*if (!WaveManager.instance.IsGameStarted)
         {
             Debug.Log("Сначала начните волну!");
             return;
-        }
+        }*/
 
         if (towers.ContainsKey(cellPos))
         {
-            Debug.Log("открывается меню для улучшения пушки");
-            return;
+            TowerSelectionUI UpdateUI = FindFirstObjectByType<TowerSelectionUI>();
+            if (UpdateUI != null)
+            {
+                towers[cellPos].GetComponent<basic_turret>().ShowRange();
+                Debug.Log("Меню апдейта");
+                //selectionUI.ShowUpdatePanel(cellPos);
+                return;
+            }
         }
-
+        
         TowerSelectionUI selectionUI = FindFirstObjectByType<TowerSelectionUI>();
         if (selectionUI != null)
         {
             selectionUI.ShowSelectionPanel(cellPos);
+
         }
         else
         {

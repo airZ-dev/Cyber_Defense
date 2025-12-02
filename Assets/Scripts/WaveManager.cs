@@ -36,6 +36,7 @@ public class WaveManager : MonoBehaviour
     private int enemiesLeftToSpawn;
     private bool isSpawning = false;
     private bool waitForStart = true;
+    
     public bool IsGameStarted
     {
         get { return !waitForStart; }

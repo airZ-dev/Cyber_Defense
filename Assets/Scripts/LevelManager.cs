@@ -39,7 +39,7 @@ public class LevelManager : MonoBehaviour
         {
             currentHP = 0;
         }
-        _hp.fillAmount = currentHP * 1.0f / baseHP;
+        //_hp.fillAmount = currentHP * 1.0f / baseHP;
         if(currentHP == 0)
         {
             DEATH();

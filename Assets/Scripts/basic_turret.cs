@@ -36,7 +36,14 @@ public class basic_turret : MonoBehaviour
         tr = new Vector3(targetRange / 5, targetRange / 5, 1);
         rangeView.GetComponent<Transform>().localScale = tr;
     }
-
+    public void ShowRange()
+    {
+        rangeView.SetActive(true);
+    }
+    public void HideRange()
+    {
+        rangeView.SetActive(false);
+    }
     private void Update()
     {
 

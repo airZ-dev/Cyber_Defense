@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BuildManager : MonoBehaviour
@@ -6,12 +7,15 @@ public class BuildManager : MonoBehaviour
 
     [Header("Regerences")]
     [SerializeField] private Tower[] towers;
+
+    public Dictionary<Vector3Int, GameObject> dict;
     //[SerializeField] private GameObject[] TowerPrefabs;
     private int selectedTower = -1;
-
     private void Awake()
     {
+        dict = new Dictionary<Vector3Int, GameObject>();
         Instance = this;
+        
     }
 
     public Tower getSelectedTower()

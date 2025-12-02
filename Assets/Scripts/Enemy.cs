@@ -63,7 +63,6 @@ public class Enemy : MonoBehaviour
     }
     private void FixedUpdate()
     {
-
         Vector2 direction = (target.position - transform.position).normalized;
         rb.linearVelocity = direction * moveSpeed;
     }

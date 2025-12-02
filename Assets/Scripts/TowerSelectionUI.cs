@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Windows.Speech;
 
 public class TowerSelectionUI : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class TowerSelectionUI : MonoBehaviour
             basicTowerButton.onClick.AddListener(() => OnTowerSelected(0));
     }
 
-    void Update()
+    /*void Update()
     {
         if (selectionPanel.activeInHierarchy && Input.GetMouseButtonDown(0))
         {
@@ -30,23 +31,20 @@ public class TowerSelectionUI : MonoBehaviour
                 HideSelectionPanel();
             }
         }
-    }
+    }*/
 
     public void ShowSelectionPanel(Vector3Int plotPos)
     {
         targetPlotPosition = plotPos;
-
-        Vector3 worldPos = GetCorrectPlotWorldPosition(plotPos);
-        Vector3 screenPos = mainCamera.WorldToScreenPoint(worldPos);
-
-        selectionPanel.transform.position = screenPos + new Vector3(120, 0, 0);
         selectionPanel.SetActive(true);
+        Debug.Log(selectionPanel.activeSelf);
     }
 
     public void HideSelectionPanel()
     {
         selectionPanel.SetActive(false);
     }
+
 
     void OnTowerSelected(int towerIndex)
     {
@@ -55,7 +53,7 @@ public class TowerSelectionUI : MonoBehaviour
         BuildManager.Instance.setSelectedTower(towerIndex);
 
         BuildTower(towerIndex);
-
+        
         HideSelectionPanel();
     }
 
@@ -70,6 +68,7 @@ public class TowerSelectionUI : MonoBehaviour
         Vector3 worldPos = GetCorrectPlotWorldPosition(targetPlotPosition);
 
         GameObject tower = Instantiate(selectedTower.prefab, worldPos, Quaternion.identity);
+        BuildManager.Instance.dict[targetPlotPosition] = tower;
     }
 
     Vector3 GetCorrectPlotWorldPosition(Vector3Int plotPos)
