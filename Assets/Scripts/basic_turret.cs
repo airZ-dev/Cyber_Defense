@@ -21,12 +21,19 @@ public class basic_turret : MonoBehaviour
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Transform firingPoint;
     [SerializeField] private GameObject rangeView;
+    
+    public float Range { get { return targetRange; } set { targetRange = value; } }
+    public float SpeedOfSpawn { get { return bps; } set { bps = value; } }
+    public int Damage { get { return bulletDamage; } set { bulletDamage = value; } }
 
+    private int bulletDamage;
     private Transform target;
     private float timeUntilFire;
     private void Awake()
     {
         ChangeRange(targetRange);
+        bulletDamage = bulletPrefab.GetComponent<bullet>().Damage;
+        HideRange();
     }
 
     public void ChangeRange(float range)
@@ -46,7 +53,6 @@ public class basic_turret : MonoBehaviour
     }
     private void Update()
     {
-
         if (target == null)
         {
             FindTarget();

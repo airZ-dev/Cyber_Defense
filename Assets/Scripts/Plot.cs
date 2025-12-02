@@ -109,12 +109,12 @@ public class Plot : MonoBehaviour
         }
         else
         {
-            if (tilemap.HasTile(lastHoveredCell))
+            /*if (tilemap.HasTile(lastHoveredCell))
             {
                 if (towers.ContainsKey(lastHoveredCell)) towers[lastHoveredCell].GetComponent<basic_turret>().HideRange();
                 ResetTileColor(lastHoveredCell);
                 lastHoveredCell = new Vector3Int(int.MaxValue, int.MaxValue, int.MaxValue);
-            }
+            }*/
         }
     }
 
@@ -164,16 +164,17 @@ public class Plot : MonoBehaviour
 
         if (towers.ContainsKey(cellPos))
         {
+
             TowerSelectionUI UpdateUI = FindFirstObjectByType<TowerSelectionUI>();
             if (UpdateUI != null)
             {
                 towers[cellPos].GetComponent<basic_turret>().ShowRange();
                 Debug.Log("Μενώ ΰοδειςΰ");
-                //selectionUI.ShowUpdatePanel(cellPos);
+                UpdateUI.ShowUpdatePanel(cellPos);
                 return;
             }
         }
-        
+
         TowerSelectionUI selectionUI = FindFirstObjectByType<TowerSelectionUI>();
         if (selectionUI != null)
         {

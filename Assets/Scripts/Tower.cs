@@ -2,19 +2,25 @@ using UnityEngine;
 using System;
 
 [Serializable]
-public class Tower
+public class Tower : MonoBehaviour
 {
-    public string name;
-    public int cost;
+    //сделать его род классом с вирт методами для остальных турелей
+    [Header("Settings")]
+    [SerializeField] private int MaxLevel = 10;
+    [SerializeField] private int CostOfUpg = 30;
+
     public GameObject prefab;
-    public float x_pos;
-    public float y_pos;
-    public Tower(string _name, int _cost, GameObject _prefab, float x = 0.0f, float y = 0.0f)
+
+    public int currentLevel = 1;
+    public int maxLvl { get { return MaxLevel; } }
+    public int currCost { get { return CostOfUpg; } set { if (value > CostOfUpg) { CostOfUpg = value; } } }
+    public bool isPosToUpgrade(int cntlevel)
     {
-        name = _name;
-        cost = _cost;
-        prefab = _prefab;
-        x_pos = x;
-        y_pos = y;
+        return cntlevel <= MaxLevel;
+    }
+
+    public Tower(GameObject gm)
+    {
+        prefab = gm;
     }
 }
