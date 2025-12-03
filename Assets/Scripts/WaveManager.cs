@@ -102,9 +102,10 @@ public class WaveManager : MonoBehaviour
         ++currentWave;
         currentTimebtwWaves = timeBtwWave;
         waitForStart = true;
-        if (currentWave >= enemyTypeWaves.Length)
+        if (currentWave >= enemyTypeWaves.Length && LevelManager.instance != null && LevelManager.instance.CurrentHP > 0)
         {
             Debug.Log("Все волны завершены!");
+            LevelManager.instance.WIN();
         }
     }
 

@@ -16,7 +16,8 @@ public class LevelManager : MonoBehaviour
     [SerializeField] public int currency;
     [SerializeField] private int baseHP;
     [SerializeField] private Image _hp;
-   
+
+    public int CurrentHP { get { return currentHP; } }
 
     private void Awake()
     {
@@ -43,12 +44,21 @@ public class LevelManager : MonoBehaviour
         if(currentHP == 0)
         {
             DEATH();
+            return;
         }
     }
     private void DEATH()
     {
-        //deathMenu.instance.winOrLoseWindowShow(false);
+        if (WinOrLossMenu.instance != null)
+            WinOrLossMenu.instance.winOrLoseWindowShow(false);
     }
+
+    public void WIN()
+    {
+        if (WinOrLossMenu.instance != null)
+            WinOrLossMenu.instance.winOrLoseWindowShow(true);
+    }
+
     public void IncreaseCurrency(int amount)
     {
         currency += amount;
