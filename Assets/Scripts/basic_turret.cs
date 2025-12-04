@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEditor;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using UnityEditor.ShaderGraph.Internal;
 using System;
 
 
@@ -118,8 +117,20 @@ public class basic_turret : MonoBehaviour
     }
     private void OnDrawGizmosSelected()
     {
-        Handles.color = Color.red;
-        Handles.DrawWireDisc(transform.position, transform.forward, targetRange);
+        Gizmos.color = Color.red;
+        Vector3 center = transform.position;
+        int segments = 36;
+
+        for (int i = 0; i < segments; i++)
+        {
+            float startAngle = (i / (float)segments) * 360f * Mathf.Deg2Rad;
+            float endAngle = ((i + 1) / (float)segments) * 360f * Mathf.Deg2Rad;
+
+            Vector3 start = center + new Vector3(Mathf.Cos(startAngle), Mathf.Sin(startAngle), 0) * targetRange;
+            Vector3 end = center + new Vector3(Mathf.Cos(endAngle), Mathf.Sin(endAngle), 0) * targetRange;
+
+            Gizmos.DrawLine(start, end);
+        }
     }
 
 }
