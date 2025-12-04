@@ -8,12 +8,15 @@ public class Tower : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private int MaxLevel = 10;
     [SerializeField] private int CostOfUpg = 30;
+    [SerializeField] private int CostOfBuy = 45;
 
     public GameObject prefab;
 
     public int currentLevel = 1;
     public int maxLvl { get { return MaxLevel; } }
     public int currCost { get { return CostOfUpg; } set { if (value > CostOfUpg) { CostOfUpg = value; } } }
+    public int butCost { get { return CostOfBuy; } }
+
     public bool isPosToUpgrade(int cntlevel)
     {
         return cntlevel <= MaxLevel;

@@ -17,7 +17,7 @@ public class CameraDragMovement : MonoBehaviour
 
     void Update()
     {
-        if (LevelManager.instance.isStop)
+        if (LevelManager.instance.isActive)
         {
             // Начало перемещения при нажатии ЛКМ
             if (Input.GetMouseButtonDown(0))

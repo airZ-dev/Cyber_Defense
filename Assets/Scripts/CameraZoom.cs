@@ -24,7 +24,7 @@ public class CameraZoomMovement : MonoBehaviour
 
     void Update()
     {
-        if (LevelManager.instance.isStop)
+        if (LevelManager.instance.isActive)
         {
             HandleZoom();
         }

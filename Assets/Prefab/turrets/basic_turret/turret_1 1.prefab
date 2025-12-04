@@ -135,8 +135,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71ea5681b01a3e647bb0d587d0d54479, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxLevel: 20
+  MaxLevel: 10
   CostOfUpg: 20
+  CostOfBuy: 30
   prefab: {fileID: 2538160089774178965}
   currentLevel: 1
 --- !u!1 &4926978863178680290

@@ -56,7 +56,7 @@ public class TowerSelectionUI : MonoBehaviour
         HideUpdatewPanel();
         targetPlotPosition = plotPos;
         selectionPanel.SetActive(true);
-        Debug.Log(selectionPanel.activeSelf);
+        //Debug.Log(selectionPanel.activeSelf);
     }
 
     public void HideSelectionPanel()
@@ -114,8 +114,8 @@ public class TowerSelectionUI : MonoBehaviour
             return;
         }
         LevelManager.instance.currency -= tw.GetComponent<Tower>().currCost;
-        dmg += 10;
-        spd -= 0.1f;
+        dmg += 1;
+        spd -= 0.01f;
         currLvl += 1;
         tw.GetComponent<Tower>().currCost += 20;
         tw.GetComponent<Tower>().currentLevel = currLvl;
@@ -146,18 +146,24 @@ public class TowerSelectionUI : MonoBehaviour
         updatePanelTexts[0].text = "Скорость - " + string.Format("{0:f2}", 1/spd) + " в сек.";
         updatePanelTexts[1].text = "Радиус - " + range;
         updatePanelTexts[2].text = "Урон - " + dmg;
-        updatePanelTexts[3].text = currLvl + "/" + tw.GetComponent<Tower>().maxLvl + " уровень";
+        updatePanelTexts[3].text = currLvl + "/" + tw.GetComponent<Tower>().maxLvl + " уровень\n" + "цена: " + tw.GetComponent<Tower>().currCost;
     }
 
     void OnTowerSelected(int towerIndex)
     {
         //Debug.Log($"Выбрана башня с индексом: {towerIndex}");
-
         BuildManager.Instance.setSelectedTower(towerIndex);
 
-        BuildTower(towerIndex);
-
-        HideSelectionPanel();
+        if (LevelManager.instance.currency >= BuildManager.Instance.getSelectedTower().butCost)
+        {
+            BuildTower(towerIndex);
+            LevelManager.instance.currency -= BuildManager.Instance.getSelectedTower().butCost;
+            HideSelectionPanel();
+        }
+        else
+        {
+            BuildManager.Instance.setSelectedTower(-1);
+        }
     }
 
     void BuildTower(int towerIndex)

@@ -597,5 +597,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHP: 150
-  currancyWorth: 15
+  currancyWorth: 100
   _healthbar: {fileID: 5581378868175717391}

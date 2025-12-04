@@ -3,6 +3,7 @@ using UnityEngine.Tilemaps;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using System;
+using UnityEditor.Rendering.Universal;
 
 public class Plot : MonoBehaviour
 {
@@ -104,6 +105,7 @@ public class Plot : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0))
             {
+                hideAllRanger();
                 OnTileClick(cellPos);
             }
         }
@@ -117,7 +119,13 @@ public class Plot : MonoBehaviour
             }*/
         }
     }
-
+    private void hideAllRanger()
+    {
+        foreach(var x in towers.Values)
+        {
+            x?.GetComponent<basic_turret>().HideRange();
+        }
+    }
     bool IsMouseInViewport()
     {
         Vector3 mousePos = Input.mousePosition;
@@ -169,7 +177,7 @@ public class Plot : MonoBehaviour
             if (UpdateUI != null)
             {
                 towers[cellPos].GetComponent<basic_turret>().ShowRange();
-                Debug.Log("Меню апдейта");
+                //Debug.Log("Меню апдейта");
                 UpdateUI.ShowUpdatePanel(cellPos);
                 return;
             }
@@ -183,7 +191,7 @@ public class Plot : MonoBehaviour
         }
         else
         {
-            Debug.LogError("TowerSelectionUI не найден на сцене!");
+           // Debug.LogError("TowerSelectionUI не найден на сцене!");
         }
     }
 

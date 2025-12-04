@@ -1,8 +1,8 @@
 using JetBrains.Annotations;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
-
 public class LevelManager : MonoBehaviour
 {
     public static LevelManager instance { get; private set; }
@@ -10,12 +10,27 @@ public class LevelManager : MonoBehaviour
     public Transform startPoint;
     public Transform[] path;
 
-    public bool isStop;
+    public bool isActive;
     private int currentHP;
 
     [SerializeField] public int currency;
     [SerializeField] private int baseHP;
-    [SerializeField] private Image _hp;
+    [SerializeField] private TextMeshProUGUI _hps;
+    [SerializeField] private TextMeshProUGUI _cur;
+    [SerializeField] private TextMeshProUGUI _wav;
+
+    private void OnGUI()
+    {
+        if (_hps != null)
+            _hps.text = $"хп базы: {CurrentHP}";
+        if(_cur != null)
+            _cur.text = $"денег: {currency}";
+        if(_wav != null)
+        {
+            _wav.text = $"волна: {WaveManager.instance.current_wave+1}|{WaveManager.instance.max_wave}";
+
+        }
+    }
 
     public int CurrentHP { get { return currentHP; } }
 
@@ -31,7 +46,7 @@ public class LevelManager : MonoBehaviour
         {
             currency = 48*2;
         }
-        isStop = true;
+        isActive = true;
     }
     public void takeDamage(int amount)
     {
@@ -73,7 +88,7 @@ public class LevelManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("No Money");
+            //Debug.Log("No Money");
             return false;
         }
     }

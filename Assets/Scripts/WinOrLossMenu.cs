@@ -25,7 +25,7 @@ public class WinOrLossMenu : MonoBehaviour
     public void winOrLoseWindowShow(bool isWin)
     {
         Time.timeScale = 0f;
-
+        LevelManager.instance.isActive = false;
         if (isWin)
         {
             winPanel.SetActive(true);

@@ -43,6 +43,9 @@ public class WaveManager : MonoBehaviour
     }
     private float currentTimebtwWaves;
 
+    public int current_wave { get { return currentWave; } }
+    public int max_wave { get { return enemyCount.Length; } }
+
 
     private void Awake()
     {
@@ -104,7 +107,7 @@ public class WaveManager : MonoBehaviour
         waitForStart = true;
         if (currentWave >= enemyTypeWaves.Length && LevelManager.instance != null && LevelManager.instance.CurrentHP > 0)
         {
-            Debug.Log("Все волны завершены!");
+            //Debug.Log("Все волны завершены!");
             LevelManager.instance.WIN();
         }
     }

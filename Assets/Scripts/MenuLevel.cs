@@ -37,14 +37,14 @@ public class SettingsMenu : MonoBehaviour
 
     public void PauseGame()
     {
-        isPaused = true;
+        LevelManager.instance.isActive = false;
         Time.timeScale = 0f;
         settingsPanel.SetActive(true);
     }
 
     public void ResumeGame()
     {
-        isPaused = false;
+        LevelManager.instance.isActive = true;
         Time.timeScale = 1f;
         settingsPanel.SetActive(false);
     }
