@@ -122,7 +122,11 @@ public class Plot : MonoBehaviour
     {
         foreach(var x in towers.Values)
         {
-            x?.GetComponent<basic_turret>().HideRange();
+            basic_turret bt = x?.GetComponent<basic_turret>();
+            if (bt != null) bt.HideRange();
+
+            FreezeTurret ft = x?.GetComponent<FreezeTurret>();
+            if (ft != null) ft.HideRange();
         }
     }
     bool IsMouseInViewport()
@@ -175,11 +179,16 @@ public class Plot : MonoBehaviour
             TowerSelectionUI UpdateUI = FindFirstObjectByType<TowerSelectionUI>();
             if (UpdateUI != null)
             {
-                towers[cellPos].GetComponent<basic_turret>().ShowRange();
-                //Debug.Log("Μενώ ΰοδειςΰ");
+                basic_turret bt = towers[cellPos].GetComponent<basic_turret>();
+                if (bt != null) bt.ShowRange();
+
+                FreezeTurret ft = towers[cellPos].GetComponent<FreezeTurret>();
+                if (ft != null) ft.ShowRange();
+
                 UpdateUI.ShowUpdatePanel(cellPos);
-                return;
+                
             }
+            return;
         }
 
         TowerSelectionUI selectionUI = FindFirstObjectByType<TowerSelectionUI>();

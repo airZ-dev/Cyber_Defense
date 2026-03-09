@@ -19,6 +19,8 @@ public class Enemy : MonoBehaviour
     private bool isMoving = true;
     private float baseSpeed;
     private bool isSlowed = false;
+    private SpriteRenderer spriteRenderer;
+    private Color originalColor;
 
     private void Start()
     {
@@ -31,6 +33,10 @@ public class Enemy : MonoBehaviour
         }
         rb = GetComponent<Rigidbody2D>();
         baseSpeed = moveSpeed;
+
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+            originalColor = spriteRenderer.color;
     }
 
     private void Update()
@@ -67,19 +73,6 @@ public class Enemy : MonoBehaviour
         rb.linearVelocity = direction * moveSpeed;
     }
 
-    public void ApplyEffectSlowness(float slowFactor)
-    {
-        if (isSlowed) return;
-        moveSpeed *= slowFactor;
-
-        isSlowed = true;
-    }
-    public void RemoveSlowness()
-    {
-        if (!isSlowed) return;
-        moveSpeed = baseSpeed;
-        isSlowed = false;
-    }
     private IEnumerator ScaleEnemyOnDespawn(Transform enemy_transform)
     {
         float elapsedTime = 0f;
@@ -98,5 +91,33 @@ public class Enemy : MonoBehaviour
        WaveManager.onEnemyDestroy?.Invoke();
         Destroy(gameObject);
     }
+
+    public void ApplyEffectSlowness(float slowFactor)
+    {
+        if (isSlowed) return;
+        moveSpeed *= slowFactor;
+        isSlowed = true;
+
+        // Если slowFactor == 0, значит полная заморозка — меняем цвет
+        if (slowFactor == 0f)
+            SetFrozenVisual(true);
+    }
+
+    // Изменить RemoveSlowness
+    public void RemoveSlowness()
+    {
+        if (!isSlowed) return;
+        moveSpeed = baseSpeed;
+        isSlowed = false;
+        SetFrozenVisual(false);
+    }
+
+    // Добавить вспомогательный метод
+    private void SetFrozenVisual(bool frozen)
+    {
+        if (spriteRenderer != null)
+            spriteRenderer.color = frozen ? Color.cyan : originalColor;
+    }
+
 }
 
