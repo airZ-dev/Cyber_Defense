@@ -7,10 +7,10 @@ using System;
 public class Plot : MonoBehaviour
 {
     [Header("Настройки")]
-    public Color hoverColor = Color.yellow;
-    public Color clickColor = Color.red;
+    public TileBase highlightTile;
+    public TileBase originalTile;
     public bool enableTileSelection = true;
-
+    
     [Header("Ссылки")]
     public Tilemap tilemap;
 
@@ -20,6 +20,8 @@ public class Plot : MonoBehaviour
     private Vector3Int lastHoveredCell;
     private Camera mainCamera;
     private Dictionary<Vector3Int, GameObject> towers;
+    
+    
     // События для внешних скриптов
     public Action<Vector3Int> OnTileHovered;
     public Action<Vector3Int> OnTileClicked;
@@ -28,10 +30,9 @@ public class Plot : MonoBehaviour
     {
         mainCamera = Camera.main;
         if (tilemap == null)
-        {
             tilemap = GetComponent<Tilemap>();
-        }
         towers = BuildManager.Instance.dict;
+       
     }
 
     void Update()
@@ -98,7 +99,7 @@ public class Plot : MonoBehaviour
         {
             if (cellPos != lastHoveredCell)
             {
-                //OnTileHover(cellPos);
+                OnTileHover(cellPos);
                 lastHoveredCell = cellPos;
             }
 
@@ -110,12 +111,13 @@ public class Plot : MonoBehaviour
         }
         else
         {
-            /*if (tilemap.HasTile(lastHoveredCell))
+            if (tilemap.HasTile(lastHoveredCell))
             {
-                if (towers.ContainsKey(lastHoveredCell)) towers[lastHoveredCell].GetComponent<basic_turret>().HideRange();
-                ResetTileColor(lastHoveredCell);
+                if (towers.ContainsKey(lastHoveredCell)) 
+                    towers[lastHoveredCell].GetComponent<basic_turret>().HideRange();
+                ResetTile(lastHoveredCell);
                 lastHoveredCell = new Vector3Int(int.MaxValue, int.MaxValue, int.MaxValue);
-            }*/
+            }
         }
     }
     private void hideAllRanger()
@@ -154,16 +156,11 @@ public class Plot : MonoBehaviour
         }
     }
 
-    /*void OnTileHover(Vector3Int cellPos)
+    void OnTileHover(Vector3Int cellPos)
     {
-        if (tilemap.HasTile(lastHoveredCell))
-        {
-            ResetTileColor(lastHoveredCell);
-        }
-
-        tilemap.SetColor(cellPos, hoverColor);
-        OnTileHovered?.Invoke(cellPos);
-    }*/
+        tilemap.SetTile(cellPos, highlightTile);
+        //OnTileHovered?.Invoke(cellPos);
+    }
 
     void OnTileClick(Vector3Int cellPos)
     {
@@ -203,9 +200,12 @@ public class Plot : MonoBehaviour
         }
     }
 
-    void ResetTileColor(Vector3Int cellPos)
+    void ResetTile(Vector3Int cellPos)
     {
-        tilemap.SetColor(cellPos, Color.white);
+        if (originalTile != null)
+        {
+           tilemap.SetTile(cellPos, originalTile);
+        }
     }
 
     // Публичные методы для управления

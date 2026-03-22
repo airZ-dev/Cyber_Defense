@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7646efcb8e68b6049b766ed01e25a808
+guid: 08cf8b82faaceb9478edd78f223c60b6
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8909260137939148307
-    second: Fon2_0
+      213: 759736198556305293
+    second: Property_1Button_6_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Fon2_0
+      name: Property_1Button_6_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 353
-        height: 179
+        width: 966
+        height: 723
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 28, y: 36, z: 23, w: 41}
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 31e196564ec04ab70800000000000000
-      internalID: 8909260137939148307
+      spriteID: d8744fd1c002b8a00800000000000000
+      internalID: 759736198556305293
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 69b8316713e61e04594c4494adc511fc
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Fon2_0: 8909260137939148307
+      Property_1Button_6_0: 759736198556305293
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
