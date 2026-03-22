@@ -10,7 +10,7 @@ public class Plot : MonoBehaviour
     public TileBase highlightTile;
     public TileBase originalTile;
     public bool enableTileSelection = true;
-    
+
     [Header("—сылки")]
     public Tilemap tilemap;
 
@@ -20,8 +20,8 @@ public class Plot : MonoBehaviour
     private Vector3Int lastHoveredCell;
     private Camera mainCamera;
     private Dictionary<Vector3Int, GameObject> towers;
-    
-    
+
+
     // —обыти€ дл€ внешних скриптов
     public Action<Vector3Int> OnTileHovered;
     public Action<Vector3Int> OnTileClicked;
@@ -32,7 +32,7 @@ public class Plot : MonoBehaviour
         if (tilemap == null)
             tilemap = GetComponent<Tilemap>();
         towers = BuildManager.Instance.dict;
-       
+
     }
 
     void Update()
@@ -113,16 +113,17 @@ public class Plot : MonoBehaviour
         {
             if (tilemap.HasTile(lastHoveredCell))
             {
-                if (towers.ContainsKey(lastHoveredCell)) 
-                    towers[lastHoveredCell].GetComponent<basic_turret>().HideRange();
-                ResetTile(lastHoveredCell);
+                //if (towers.ContainsKey(lastHoveredCell))
+                //    towers[lastHoveredCell].GetComponent<basic_turret>().HideRange();
+                if (!towers.ContainsKey(lastHoveredCell))
+                    ResetTile(lastHoveredCell);
                 lastHoveredCell = new Vector3Int(int.MaxValue, int.MaxValue, int.MaxValue);
             }
         }
     }
     private void hideAllRanger()
     {
-        foreach(var x in towers.Values)
+        foreach (var x in towers.Values)
         {
             basic_turret bt = x?.GetComponent<basic_turret>();
             if (bt != null) bt.HideRange();
@@ -158,6 +159,11 @@ public class Plot : MonoBehaviour
 
     void OnTileHover(Vector3Int cellPos)
     {
+        if(towers.ContainsKey(cellPos))
+        {
+           ResetTile(cellPos);
+           return;
+        }
         tilemap.SetTile(cellPos, highlightTile);
         //OnTileHovered?.Invoke(cellPos);
     }
@@ -183,7 +189,7 @@ public class Plot : MonoBehaviour
                 if (ft != null) ft.ShowRange();
 
                 UpdateUI.ShowUpdatePanel(cellPos);
-                
+
             }
             return;
         }
@@ -196,7 +202,7 @@ public class Plot : MonoBehaviour
         }
         else
         {
-           // Debug.LogError("TowerSelectionUI не найден на сцене!");
+            // Debug.LogError("TowerSelectionUI не найден на сцене!");
         }
     }
 
@@ -204,7 +210,7 @@ public class Plot : MonoBehaviour
     {
         if (originalTile != null)
         {
-           tilemap.SetTile(cellPos, originalTile);
+            tilemap.SetTile(cellPos, originalTile);
         }
     }
 
