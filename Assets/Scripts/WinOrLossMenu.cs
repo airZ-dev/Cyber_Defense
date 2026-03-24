@@ -28,6 +28,14 @@ public class WinOrLossMenu : MonoBehaviour
         LevelManager.instance.isActive = false;
         if (isWin)
         {
+            int currentLevel = SceneManager.GetActiveScene().buildIndex;
+            int maxUnlocked = SaveSystem.LoadProgress();
+
+            if (currentLevel >= maxUnlocked)
+            {
+                SaveSystem.SaveProgress(currentLevel + 1);
+            }
+
             winPanel.SetActive(true);
             losePanel.SetActive(false);
         }
@@ -49,10 +57,17 @@ public class WinOrLossMenu : MonoBehaviour
     {
         Time.timeScale = 1f;
         int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+        int maxUnlocked = SaveSystem.LoadProgress();
 
-        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+        if (nextSceneIndex <= maxUnlocked && nextSceneIndex < SceneManager.sceneCountInBuildSettings)
         {
             SceneManager.LoadScene(nextSceneIndex);
+        }
+
+        else if (nextSceneIndex > maxUnlocked)
+        {
+            Debug.Log("Следующий уровень еще не разблокирован!");
+            SceneManager.LoadScene(0);
         }
 
         else
