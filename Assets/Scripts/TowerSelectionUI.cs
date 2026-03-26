@@ -24,6 +24,8 @@ public class TowerSelectionUI : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private TextMeshProUGUI[] updatePanelTexts;
+    [SerializeField] private Image imageUpdate;
+    [SerializeField] private Sprite[] imagesRequire;
     void Start()
     {
         mainCamera = Camera.main;
@@ -172,6 +174,8 @@ public class TowerSelectionUI : MonoBehaviour
             t.text = "";
         if (tw?.GetComponent<basic_turret>() != null)
         {
+            if (imagesRequire != null)
+                imageUpdate.GetComponent<Image>().sprite = imagesRequire[0];
             updatePanelTexts[0].text = "Скорость - " + string.Format("{0:f2}", 1 / spd) + " в сек.";
             updatePanelTexts[1].text = "Радиус - " + range;
             updatePanelTexts[2].text = "Урон - " + dmg;
@@ -180,6 +184,8 @@ public class TowerSelectionUI : MonoBehaviour
 
         if (tw?.GetComponent<FreezeTurret>() != null)
         {
+            if (imagesRequire != null)
+                imageUpdate.GetComponent<Image>().sprite = imagesRequire[1];
             updatePanelTexts[0].text = "Скорость - " + string.Format("{0:f2}", 1 / spd) + " в сек."; // если нужно, можно хранить rotationSpeed
             updatePanelTexts[1].text = "Радиус - " + range;
             updatePanelTexts[2].text = "Заморозка - " + ((1 - freezeFactor) * 100) + "%"; // чем меньше freezeFactor, тем сильнее эффект
