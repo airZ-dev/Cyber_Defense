@@ -30121,7 +30121,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -0.0000066757, y: -0.000017166}
-  m_SizeDelta: {x: 82.1753, y: 61.8043}
+  m_SizeDelta: {x: 70, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &896004208
 MonoBehaviour:
@@ -32641,6 +32641,10 @@ MonoBehaviour:
   - {fileID: 1671785112}
   - {fileID: 1416941190}
   - {fileID: 1488229568}
+  imageUpdate: {fileID: 896004208}
+  imagesRequire:
+  - {fileID: -9132893696528004699, guid: 6ac7cc1e620ef494f83546ee1ee15973, type: 3}
+  - {fileID: -1250650651820844839, guid: b5b6f66a5acc75a42b654c3b8f35a166, type: 3}
 --- !u!114 &1791828565
 MonoBehaviour:
   m_ObjectHideFlags: 0
