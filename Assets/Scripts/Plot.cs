@@ -7,8 +7,8 @@ using System;
 public class Plot : MonoBehaviour
 {
     [Header("Настройки")]
-    public Color hoverColor = Color.yellow;
-    public Color clickColor = Color.red;
+    public TileBase highlightTile;
+    public TileBase originalTile;
     public bool enableTileSelection = true;
 
     [Header("Ссылки")]
@@ -20,6 +20,8 @@ public class Plot : MonoBehaviour
     private Vector3Int lastHoveredCell;
     private Camera mainCamera;
     private Dictionary<Vector3Int, GameObject> towers;
+
+
     // События для внешних скриптов
     public Action<Vector3Int> OnTileHovered;
     public Action<Vector3Int> OnTileClicked;
@@ -28,10 +30,9 @@ public class Plot : MonoBehaviour
     {
         mainCamera = Camera.main;
         if (tilemap == null)
-        {
             tilemap = GetComponent<Tilemap>();
-        }
         towers = BuildManager.Instance.dict;
+
     }
 
     void Update()
@@ -98,7 +99,7 @@ public class Plot : MonoBehaviour
         {
             if (cellPos != lastHoveredCell)
             {
-                //OnTileHover(cellPos);
+                OnTileHover(cellPos);
                 lastHoveredCell = cellPos;
             }
 
@@ -110,19 +111,25 @@ public class Plot : MonoBehaviour
         }
         else
         {
-            /*if (tilemap.HasTile(lastHoveredCell))
+            if (tilemap.HasTile(lastHoveredCell))
             {
-                if (towers.ContainsKey(lastHoveredCell)) towers[lastHoveredCell].GetComponent<basic_turret>().HideRange();
-                ResetTileColor(lastHoveredCell);
+                //if (towers.ContainsKey(lastHoveredCell))
+                //    towers[lastHoveredCell].GetComponent<basic_turret>().HideRange();
+                if (!towers.ContainsKey(lastHoveredCell))
+                    ResetTile(lastHoveredCell);
                 lastHoveredCell = new Vector3Int(int.MaxValue, int.MaxValue, int.MaxValue);
-            }*/
+            }
         }
     }
     private void hideAllRanger()
     {
-        foreach(var x in towers.Values)
+        foreach (var x in towers.Values)
         {
-            x?.GetComponent<basic_turret>().HideRange();
+            basic_turret bt = x?.GetComponent<basic_turret>();
+            if (bt != null) bt.HideRange();
+
+            FreezeTurret ft = x?.GetComponent<FreezeTurret>();
+            if (ft != null) ft.HideRange();
         }
     }
     bool IsMouseInViewport()
@@ -150,16 +157,16 @@ public class Plot : MonoBehaviour
         }
     }
 
-    /*void OnTileHover(Vector3Int cellPos)
+    void OnTileHover(Vector3Int cellPos)
     {
-        if (tilemap.HasTile(lastHoveredCell))
+        if(towers.ContainsKey(cellPos))
         {
-            ResetTileColor(lastHoveredCell);
+           ResetTile(cellPos);
+           return;
         }
-
-        tilemap.SetColor(cellPos, hoverColor);
-        OnTileHovered?.Invoke(cellPos);
-    }*/
+        tilemap.SetTile(cellPos, highlightTile);
+        //OnTileHovered?.Invoke(cellPos);
+    }
 
     void OnTileClick(Vector3Int cellPos)
     {
@@ -175,11 +182,16 @@ public class Plot : MonoBehaviour
             TowerSelectionUI UpdateUI = FindFirstObjectByType<TowerSelectionUI>();
             if (UpdateUI != null)
             {
-                towers[cellPos].GetComponent<basic_turret>().ShowRange();
-                //Debug.Log("Меню апдейта");
+                basic_turret bt = towers[cellPos].GetComponent<basic_turret>();
+                if (bt != null) bt.ShowRange();
+
+                FreezeTurret ft = towers[cellPos].GetComponent<FreezeTurret>();
+                if (ft != null) ft.ShowRange();
+
                 UpdateUI.ShowUpdatePanel(cellPos);
-                return;
+
             }
+            return;
         }
 
         TowerSelectionUI selectionUI = FindFirstObjectByType<TowerSelectionUI>();
@@ -190,13 +202,16 @@ public class Plot : MonoBehaviour
         }
         else
         {
-           // Debug.LogError("TowerSelectionUI не найден на сцене!");
+            // Debug.LogError("TowerSelectionUI не найден на сцене!");
         }
     }
 
-    void ResetTileColor(Vector3Int cellPos)
+    void ResetTile(Vector3Int cellPos)
     {
-        tilemap.SetColor(cellPos, Color.white);
+        if (originalTile != null)
+        {
+            tilemap.SetTile(cellPos, originalTile);
+        }
     }
 
     // Публичные методы для управления

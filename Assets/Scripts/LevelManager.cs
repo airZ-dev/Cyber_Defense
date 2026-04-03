@@ -22,12 +22,12 @@ public class LevelManager : MonoBehaviour
     private void OnGUI()
     {
         if (_hps != null)
-            _hps.text = $"хп базы: {CurrentHP}";
+            _hps.text = $"{currentHP}";
         if(_cur != null)
-            _cur.text = $"денег: {currency}";
+            _cur.text = $"{currency}";
         if(_wav != null)
         {
-            _wav.text = $"волна: {WaveManager.instance.current_wave+1}|{WaveManager.instance.max_wave}";
+            _wav.text = $"{WaveManager.instance.current_wave+1}|{WaveManager.instance.max_wave}";
 
         }
     }

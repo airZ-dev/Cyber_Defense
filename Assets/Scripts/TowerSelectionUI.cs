@@ -7,7 +7,7 @@ using UnityEngine.Windows.Speech;
 public class TowerSelectionUI : MonoBehaviour
 {
     public GameObject selectionPanel;
-    public Button basicTowerButton;
+    public Button[] TowerButtons;
     public GameObject updatePanel;
     public Button updateButton;
     public Button[] exitBtn;
@@ -20,16 +20,23 @@ public class TowerSelectionUI : MonoBehaviour
     private float range;
     private int currLvl;
     private GameObject tw;
+    private float freezeFactor;
 
     [Header("References")]
     [SerializeField] private TextMeshProUGUI[] updatePanelTexts;
+    [SerializeField] private Image imageUpdate;
+    [SerializeField] private Sprite[] imagesRequire;
     void Start()
     {
         mainCamera = Camera.main;
         selectionPanel.SetActive(false);
         updatePanel.SetActive(false);
-        if (basicTowerButton != null)
-            basicTowerButton.onClick.AddListener(() => OnTowerSelected(0));
+        if (TowerButtons != null)
+        {
+            TowerButtons[0].onClick.AddListener(() => OnTowerSelected(0));
+            TowerButtons[1].onClick.AddListener(() => OnTowerSelected(1));
+
+        }
         if (updateButton != null)
             updateButton.onClick.AddListener(() => OnClickButtonUpdate());
         foreach(var x in exitBtn)
@@ -76,10 +83,11 @@ public class TowerSelectionUI : MonoBehaviour
         ///реализовать для всех башен
         if (tw != null)
         {
-            if (tw.GetComponent<basic_turret>() != null)
-            {
-                tw.GetComponent<basic_turret>().HideRange();
-            }
+            basic_turret bt = tw.GetComponent<basic_turret>();
+            if (bt != null) bt.HideRange();
+
+            FreezeTurret ft = tw.GetComponent<FreezeTurret>();
+            if (ft != null) ft.HideRange();
         }
 
 
@@ -95,6 +103,15 @@ public class TowerSelectionUI : MonoBehaviour
             dmg = bt.Damage;
             spd = bt.SpeedOfSpawn;
             range = bt.Range;
+        }
+
+        FreezeTurret ft = tw.GetComponent<FreezeTurret>();
+        if (ft!=null)
+        {
+            dmg = ft.Damage;          // не используется, но оставляем для совместимости
+            spd = ft.SpeedOfSpawn;    // не используется
+            range = ft.Range;
+            freezeFactor = ft.FreezeFactor;
         }
         //реализовать для других турелей
         // else { }
@@ -114,23 +131,37 @@ public class TowerSelectionUI : MonoBehaviour
             return;
         }
         LevelManager.instance.currency -= tw.GetComponent<Tower>().currCost;
-        dmg += 1;
-        spd -= 0.01f;
-        currLvl += 1;
-        tw.GetComponent<Tower>().currCost += 20;
-        tw.GetComponent<Tower>().currentLevel = currLvl;
+
+        // Увеличение характеристик в зависимости от типа
         basic_turret bt = tw.GetComponent<basic_turret>();
         if (bt != null)
         {
+            dmg += 1;
+            spd -= 0.01f; // скорострельность увеличивается
             range += 0.5f;
-            bt.ChangeRange(range);
+            currLvl += 1;
+            tw.GetComponent<Tower>().currCost += 20;
+            tw.GetComponent<Tower>().currentLevel = currLvl;
+
             bt.Damage = dmg;
             bt.SpeedOfSpawn = spd;
+            bt.ChangeRange(range);
         }
-        //для других переделать
 
+        FreezeTurret ft = tw.GetComponent<FreezeTurret>();
+        if (ft != null)
+        {
+            // Для замораживающей турели улучшаем радиус и силу заморозки
+            range += 0.5f;
+            freezeFactor = Mathf.Max(0, freezeFactor - 0.1f); // приближаем к 0 (сильнее мороз)
+            currLvl += 1;
+            tw.GetComponent<Tower>().currCost += 20;
+            tw.GetComponent<Tower>().currentLevel = currLvl;
 
-
+            ft.ChangeRange(range);
+            ft.FreezeFactor = freezeFactor;
+            // damage и speedOfSpawn не используются
+        }
     }
 
     private void OnGUI()
@@ -139,14 +170,27 @@ public class TowerSelectionUI : MonoBehaviour
         {
             return;
         }
-        if (tw == null)
+        foreach (var t in updatePanelTexts)
+            t.text = "";
+        if (tw?.GetComponent<basic_turret>() != null)
         {
-            return;
+            if (imagesRequire != null)
+                imageUpdate.GetComponent<Image>().sprite = imagesRequire[0];
+            updatePanelTexts[0].text = "Скорость - " + string.Format("{0:f2}", 1 / spd) + " в сек.";
+            updatePanelTexts[1].text = "Радиус - " + range;
+            updatePanelTexts[2].text = "Урон - " + dmg;
+            updatePanelTexts[3].text = currLvl + "/" + tw.GetComponent<Tower>().maxLvl + " уровень\n" + "цена: " + tw.GetComponent<Tower>().currCost;
         }
-        updatePanelTexts[0].text = "Скорость - " + string.Format("{0:f2}", 1/spd) + " в сек.";
-        updatePanelTexts[1].text = "Радиус - " + range;
-        updatePanelTexts[2].text = "Урон - " + dmg;
-        updatePanelTexts[3].text = currLvl + "/" + tw.GetComponent<Tower>().maxLvl + " уровень\n" + "цена: " + tw.GetComponent<Tower>().currCost;
+
+        if (tw?.GetComponent<FreezeTurret>() != null)
+        {
+            if (imagesRequire != null)
+                imageUpdate.GetComponent<Image>().sprite = imagesRequire[1];
+            updatePanelTexts[0].text = "Скорость - " + string.Format("{0:f2}", 1 / spd) + " в сек."; // если нужно, можно хранить rotationSpeed
+            updatePanelTexts[1].text = "Радиус - " + range;
+            updatePanelTexts[2].text = "Заморозка - " + ((1 - freezeFactor) * 100) + "%"; // чем меньше freezeFactor, тем сильнее эффект
+            updatePanelTexts[3].text = currLvl + "/" + tw.GetComponent<Tower>().maxLvl + " уровень\n" + "цена: " + tw.GetComponent<Tower>().currCost;
+        }
     }
 
     void OnTowerSelected(int towerIndex)
