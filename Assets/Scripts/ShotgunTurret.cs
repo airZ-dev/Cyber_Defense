@@ -1,13 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using UnityEditor;
 using UnityEngine;
 using static basic_turret;
 
-
-public class basic_turret : MonoBehaviour
+public class ShotgunTurret : MonoBehaviour
 {
     public enum TargetStrategy
     {
@@ -16,30 +12,35 @@ public class basic_turret : MonoBehaviour
         Last       // самый новый (наименьший прогресс)
     }
 
-    [Header("Attributes")]
-    [SerializeField] protected float targetRange = 5f;
-    [SerializeField] protected float angleSpeed = 1.0f;
-    [SerializeField] protected float bps = 1f; // пулей в секунду
-    [SerializeField] private TargetStrategy targetStrategy = TargetStrategy.Closest;
 
-    [Header("References")]
-    [SerializeField] protected Transform turretRotationPoint;
-    [SerializeField] protected LayerMask enemyMask;
-    [SerializeField] protected GameObject bulletPrefab;
-    [SerializeField] protected Transform firingPoint;
-    [SerializeField] protected GameObject rangeView;
+    [Header("Shotgun Settings")]
+    [SerializeField] private int pelletCount = 5;      // количество пуль за выстрел
+    [SerializeField] private float spreadAngle = 30f;  // полный угол разброса (в градусах)
+    [SerializeField] private Transform turretRotationPoint;
+    [SerializeField] private LayerMask enemyMask;
+    [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private Transform firingPoint;
+    [SerializeField] private GameObject rangeView;                              //[SerializeField] private float pelletSpeed = 8f;
+    [SerializeField] private float targetRange = 5f;
+    [SerializeField] private float angleSpeed = 1.0f;
+    [SerializeField] private float bps = 1f; // пулей в секунду
+    [SerializeField] private int bulletDamage = 15;
+    [SerializeField] private TargetStrategy targetStrategy = TargetStrategy.Closest;
+    private Transform target;
+    private float timeUntilFire;
 
     public float Range { get { return targetRange; } set { targetRange = value; } }
-    public float SpeedOfSpawn { get { return bps; } set { bps = value; } }
+    public int CounrOfBullets { get { return pelletCount; } set { pelletCount = value; } }
     public int Damage { get { return bulletDamage; } set { bulletDamage = value; } }
 
-    protected int bulletDamage;
-    protected Transform target;
-    private float timeUntilFire;
-    protected void Awake()
+    public float Spread { get { return spreadAngle; } set { spreadAngle = value; } }
+
+
+    // Переопределяем выстрел
+    private void Awake()
     {
         ChangeRange(targetRange);
-        bulletDamage = bulletPrefab.GetComponent<bullet>().Damage;
+        bulletPrefab.GetComponent<ShotgunBullet>().Damage = bulletDamage;
         HideRange();
     }
 
@@ -50,14 +51,17 @@ public class basic_turret : MonoBehaviour
         tr = new Vector3(targetRange / 5, targetRange / 5, 1);
         rangeView.GetComponent<Transform>().localScale = tr;
     }
+
     public void ShowRange()
     {
         rangeView.SetActive(true);
     }
+
     public void HideRange()
     {
         rangeView.SetActive(false);
     }
+
     private void Update()
     {
         if (target == null)
@@ -83,15 +87,6 @@ public class basic_turret : MonoBehaviour
 
 
     }
-
-    protected void Shoot()
-    {
-        GameObject bulletObj = Instantiate(bulletPrefab, firingPoint.position, Quaternion.identity);
-        bullet bulletScript = bulletObj.GetComponent<bullet>();
-        bulletScript.SetTarget(target);
-
-    }
-
     private void FindTarget()
     {
         RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, targetRange, (Vector2)transform.position, 0f, enemyMask);
@@ -159,15 +154,10 @@ public class basic_turret : MonoBehaviour
         return null;
     }
 
+
     private bool CheckTargetInRange()
     {
-        return target != null && Vector2.Distance(target.position, transform.position) <= targetRange;
-        //return Vector2.Distance(target.position, transform.position) <= targetRange;
-    }
-    private bool CheckTargetForward()
-    {
-        float angle = Mathf.Atan2(target.position.y - transform.position.y, target.position.x - transform.position.x) * Mathf.Rad2Deg - 90.0f;
-        return angle <= target.rotation.z || angle > target.rotation.z;
+        return Vector2.Distance(target.position, transform.position) <= targetRange;
     }
 
     private void RotateToTarget()
@@ -177,6 +167,7 @@ public class basic_turret : MonoBehaviour
         turretRotationPoint.rotation = Quaternion.RotateTowards(turretRotationPoint.rotation, targetzRot, angleSpeed * Time.deltaTime);
 
     }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
@@ -195,4 +186,41 @@ public class basic_turret : MonoBehaviour
         }
     }
 
+    private void Shoot()
+    {
+        // Определяем базовое направление на цель (если цель есть)
+        Vector2 baseDirection = Vector2.right; // по умолчанию вправо
+        if (target != null)
+        {
+            baseDirection = (target.position - firingPoint.position).normalized;
+        }
+        else
+        {
+            // Если цели нет, стреляем в сторону, куда смотрит турель
+            baseDirection = turretRotationPoint.up;
+        }
+
+        // Создаём несколько пуль с разбросом
+        for (int i = 0; i < pelletCount; i++)
+        {
+            // Генерируем случайное отклонение в пределах spreadAngle
+            float angleOffset = Random.Range(-spreadAngle / 2f, spreadAngle / 2f);
+            Vector2 shootDir = Quaternion.Euler(0, 0, angleOffset) * baseDirection;
+
+            GameObject bulletObj = Instantiate(bulletPrefab, firingPoint.position, Quaternion.identity);
+            ShotgunBullet bulletScript = bulletObj.GetComponent<ShotgunBullet>();
+            if (bulletScript != null)
+            {
+                bulletScript.Initialize(shootDir);
+            }
+            else
+            {
+                // fallback: если префаб не содержит ShotgunBullet, используем стандартную пулю (не рекомендуется)
+                Debug.LogWarning("ShotgunTurret: bullet prefab missing ShotgunBullet component!");
+            }
+        }
+    }
+
+    // Остальная логика (Update, FindTarget, RotateToTarget) наследуется от basic_turret.
+    // Если нужно отключить точное наведение пуль – это уже сделано.
 }
