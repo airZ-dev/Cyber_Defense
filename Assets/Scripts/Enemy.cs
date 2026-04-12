@@ -12,6 +12,9 @@ public class Enemy : MonoBehaviour
     public int damage = 10;
     public float moveSpeed = 2f;
 
+    public float Progress;
+
+
     private Transform[] waypoints;
     private int currentWaypointIndex = 0;
     private Transform target;

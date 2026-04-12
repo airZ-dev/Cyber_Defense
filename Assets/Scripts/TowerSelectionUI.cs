@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -21,6 +22,8 @@ public class TowerSelectionUI : MonoBehaviour
     private int currLvl;
     private GameObject tw;
     private float freezeFactor;
+    private float spread;
+    private int cntPellet;
 
     [Header("References")]
     [SerializeField] private TextMeshProUGUI[] updatePanelTexts;
@@ -35,6 +38,7 @@ public class TowerSelectionUI : MonoBehaviour
         {
             TowerButtons[0].onClick.AddListener(() => OnTowerSelected(0));
             TowerButtons[1].onClick.AddListener(() => OnTowerSelected(1));
+            TowerButtons[2].onClick.AddListener(() => OnTowerSelected(2));
 
         }
         if (updateButton != null)
@@ -88,6 +92,9 @@ public class TowerSelectionUI : MonoBehaviour
 
             FreezeTurret ft = tw.GetComponent<FreezeTurret>();
             if (ft != null) ft.HideRange();
+
+            ShotgunTurret st = tw.GetComponent<ShotgunTurret>();
+            if(st != null) st.HideRange();
         }
 
 
@@ -112,6 +119,15 @@ public class TowerSelectionUI : MonoBehaviour
             spd = ft.SpeedOfSpawn;    // не используется
             range = ft.Range;
             freezeFactor = ft.FreezeFactor;
+        }
+
+        ShotgunTurret st = tw.GetComponent<ShotgunTurret>();
+        if(st!= null)
+        {
+            cntPellet = st.CounrOfBullets;
+            dmg = st.Damage;
+            spread = st.Spread;
+            range = st.Range;
         }
         //реализовать для других турелей
         // else { }
@@ -153,7 +169,7 @@ public class TowerSelectionUI : MonoBehaviour
         {
             // Для замораживающей турели улучшаем радиус и силу заморозки
             range += 0.5f;
-            freezeFactor = Mathf.Max(0, freezeFactor - 0.1f); // приближаем к 0 (сильнее мороз)
+            freezeFactor = Mathf.Max(0, freezeFactor - 0.001f); // приближаем к 0 (сильнее мороз)
             currLvl += 1;
             tw.GetComponent<Tower>().currCost += 20;
             tw.GetComponent<Tower>().currentLevel = currLvl;
@@ -161,6 +177,22 @@ public class TowerSelectionUI : MonoBehaviour
             ft.ChangeRange(range);
             ft.FreezeFactor = freezeFactor;
             // damage и speedOfSpawn не используются
+        }
+
+        ShotgunTurret st = tw.GetComponent<ShotgunTurret>();
+        if (st != null)
+        {
+            range += 0.5f;
+            spread -= spread * 0.1f;
+            cntPellet++;
+            currLvl++;
+            tw.GetComponent<Tower>().currCost += 20;
+            tw.GetComponent<Tower>().currentLevel = currLvl;
+
+            st.ChangeRange(range);
+            st.CounrOfBullets = cntPellet;
+            st.Damage = dmg;
+            st.Spread = spread;
         }
     }
 
@@ -188,7 +220,18 @@ public class TowerSelectionUI : MonoBehaviour
                 imageUpdate.GetComponent<Image>().sprite = imagesRequire[1];
             updatePanelTexts[0].text = "Скорость - " + string.Format("{0:f2}", 1 / spd) + " в сек."; // если нужно, можно хранить rotationSpeed
             updatePanelTexts[1].text = "Радиус - " + range;
-            updatePanelTexts[2].text = "Заморозка - " + ((1 - freezeFactor) * 100) + "%"; // чем меньше freezeFactor, тем сильнее эффект
+            updatePanelTexts[2].text = $"Заморозка - {((1 - freezeFactor) * 100):F0}%"; // чем меньше freezeFactor, тем сильнее эффект
+            updatePanelTexts[3].text = currLvl + "/" + tw.GetComponent<Tower>().maxLvl + " уровень\n" + "цена: " + tw.GetComponent<Tower>().currCost;
+        }
+
+
+        if(tw?.GetComponent<ShotgunTurret>() != null)
+        {
+            if (imagesRequire != null)
+                imageUpdate.GetComponent<Image>().sprite = imagesRequire[2];
+            updatePanelTexts[0].text = "Скорость - " + string.Format("{0:f2}", 1 / spd) + " в сек.";
+            updatePanelTexts[1].text = "Радиус - " + range;
+            updatePanelTexts[2].text = "Урон одной пульки - " + dmg + "\nТочность - " + spread + "\nКоличество - " + cntPellet;
             updatePanelTexts[3].text = currLvl + "/" + tw.GetComponent<Tower>().maxLvl + " уровень\n" + "цена: " + tw.GetComponent<Tower>().currCost;
         }
     }

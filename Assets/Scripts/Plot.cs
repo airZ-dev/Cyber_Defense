@@ -130,6 +130,10 @@ public class Plot : MonoBehaviour
 
             FreezeTurret ft = x?.GetComponent<FreezeTurret>();
             if (ft != null) ft.HideRange();
+
+            ShotgunTurret st = x?.GetComponent<ShotgunTurret>();
+            if(st != null) st.HideRange();
+
         }
     }
     bool IsMouseInViewport()
@@ -188,10 +192,13 @@ public class Plot : MonoBehaviour
                 FreezeTurret ft = towers[cellPos].GetComponent<FreezeTurret>();
                 if (ft != null) ft.ShowRange();
 
+                ShotgunTurret st = towers[cellPos].GetComponent<ShotgunTurret>();
+                if (st != null) st.ShowRange(); 
+
                 UpdateUI.ShowUpdatePanel(cellPos);
 
             }
-            return;
+            return; 
         }
 
         TowerSelectionUI selectionUI = FindFirstObjectByType<TowerSelectionUI>();

@@ -841,7 +841,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -0.0000066757, y: -0.000017166}
-  m_SizeDelta: {x: 82.1753, y: 61.8043}
+  m_SizeDelta: {x: 70, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &153542600
 MonoBehaviour:
@@ -2245,6 +2245,10 @@ MonoBehaviour:
   - {fileID: 360867963}
   - {fileID: 360647161}
   - {fileID: 127563083}
+  imageUpdate: {fileID: 153542600}
+  imagesRequire:
+  - {fileID: -9132893696528004699, guid: 6ac7cc1e620ef494f83546ee1ee15973, type: 3}
+  - {fileID: -1250650651820844839, guid: b5b6f66a5acc75a42b654c3b8f35a166, type: 3}
 --- !u!114 &399883592
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34114,7 +34118,7 @@ Tilemap:
   - m_RefCount: 0
     m_Data: {fileID: 0}
   - m_RefCount: 1
-    m_Data: {fileID: 11400000, guid: 0786c81f75c23464696cf18ad77bf59f, type: 2}
+    m_Data: {fileID: 11400000, guid: 6d370c7e33b6f204e9c423c909722bf4, type: 2}
   - m_RefCount: 1
     m_Data: {fileID: 11400000, guid: 8b0d2d6346471a14393d27824b8a17bf, type: 2}
   - m_RefCount: 1
@@ -34128,16 +34132,16 @@ Tilemap:
   - m_RefCount: 12
     m_Data: {fileID: 11400000, guid: 2e797ddc09bcf6241836ca38588a79a6, type: 2}
   - m_RefCount: 1
-    m_Data: {fileID: 11400000, guid: 20f6d89260a20914f97f57afee30d2e8, type: 2}
+    m_Data: {fileID: 11400000, guid: 5fe0c6f85bab332418049037840b9f90, type: 2}
   m_TileSpriteArray:
   - m_RefCount: 3019
     m_Data: {fileID: 973589037925190696, guid: d0c4b4834166d0b41a450211b86c2d4c, type: 3}
   - m_RefCount: 0
     m_Data: {fileID: 0}
   - m_RefCount: 1
-    m_Data: {fileID: 3791032009332358584, guid: 9b9730fd88ea0af4b8b13c61d7014b1e, type: 3}
+    m_Data: {fileID: -4628526043014235567, guid: 302f88866b8090e44a90b2bbc37305e5, type: 3}
   - m_RefCount: 1
-    m_Data: {fileID: -3047910355982631182, guid: 89967380d33d2514d9907e076535dd99, type: 3}
+    m_Data: {fileID: 3813021071053085153, guid: 0139c9d80ce5e2b4692cfd857eb3fcdb, type: 3}
   - m_RefCount: 1
     m_Data: {fileID: 7685192057250171243, guid: 07a2ad1f88537d84babd6f9890a75f6d, type: 3}
   - m_RefCount: 2

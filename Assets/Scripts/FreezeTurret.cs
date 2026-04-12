@@ -24,7 +24,13 @@ public class FreezeTurret : MonoBehaviour
 
     // Свойства для доступа извне
     public float Range { get => freezeRange; set => freezeRange = value; }
-    public float FreezeFactor { get => freezeFactor; set => freezeFactor = value; }
+    public float FreezeFactor
+    {
+        get => freezeFactor; set
+        {
+            if (((1 - freezeFactor) * 100) <= 80) freezeFactor = value;
+        }
+    }
     public int Damage { get => damage; set => damage = value; }
     public float SpeedOfSpawn { get => speedOfSpawn; set => speedOfSpawn = value; }
 
@@ -91,12 +97,12 @@ public class FreezeTurret : MonoBehaviour
 
         // Управление частицами
         if (freezeEffect != null)
-        { 
+        {
             freezeEffect.Play();
-        //    if (enemiesInRange.Count > 0 )
-        //        freezeEffect.Play();
-        //    else if (enemiesInRange.Count == 0)
-        //        freezeEffect.Stop();
+            //    if (enemiesInRange.Count > 0 )
+            //        freezeEffect.Play();
+            //    else if (enemiesInRange.Count == 0)
+            //        freezeEffect.Stop();
         }
     }
 

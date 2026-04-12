@@ -1259,7 +1259,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -0.0000066757, y: -0.000017166}
-  m_SizeDelta: {x: 82.1753, y: 61.8043}
+  m_SizeDelta: {x: 70, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &327213181
 MonoBehaviour:
@@ -39683,7 +39683,7 @@ Tilemap:
   - m_RefCount: 0
     m_Data: {fileID: 0}
   - m_RefCount: 1
-    m_Data: {fileID: 11400000, guid: 38161e1cb9a964d4283c30f87266fe0b, type: 2}
+    m_Data: {fileID: 11400000, guid: 8d24ead025f75f7458310891d00e858a, type: 2}
   - m_RefCount: 2
     m_Data: {fileID: 11400000, guid: 7de56e0345093ff4fa32628aab15e982, type: 2}
   - m_RefCount: 3
@@ -39697,14 +39697,14 @@ Tilemap:
   - m_RefCount: 21
     m_Data: {fileID: 11400000, guid: 2e797ddc09bcf6241836ca38588a79a6, type: 2}
   - m_RefCount: 1
-    m_Data: {fileID: 11400000, guid: 20f6d89260a20914f97f57afee30d2e8, type: 2}
+    m_Data: {fileID: 11400000, guid: 5fe0c6f85bab332418049037840b9f90, type: 2}
   m_TileSpriteArray:
   - m_RefCount: 3594
     m_Data: {fileID: 973589037925190696, guid: d0c4b4834166d0b41a450211b86c2d4c, type: 3}
   - m_RefCount: 0
     m_Data: {fileID: 0}
   - m_RefCount: 1
-    m_Data: {fileID: -5004202371455480943, guid: ac9f18af46297b442acabf70fea3bdb8, type: 3}
+    m_Data: {fileID: -1161720840125614378, guid: a6fba074022fcb142bb6075a01518e7f, type: 3}
   - m_RefCount: 2
     m_Data: {fileID: 991613389313049819, guid: 89f7c77ac9e87164d81cdf5f0a58e54a, type: 3}
   - m_RefCount: 3
@@ -39718,7 +39718,7 @@ Tilemap:
   - m_RefCount: 21
     m_Data: {fileID: -3541260491482945013, guid: 5c05484da40e56040b65f39232e77431, type: 3}
   - m_RefCount: 1
-    m_Data: {fileID: -3047910355982631182, guid: 89967380d33d2514d9907e076535dd99, type: 3}
+    m_Data: {fileID: 3813021071053085153, guid: 0139c9d80ce5e2b4692cfd857eb3fcdb, type: 3}
   m_TileMatrixArray:
   - m_RefCount: 3654
     m_Data:
@@ -41265,6 +41265,10 @@ MonoBehaviour:
   - {fileID: 180800413}
   - {fileID: 564741752}
   - {fileID: 492596057}
+  imageUpdate: {fileID: 327213181}
+  imagesRequire:
+  - {fileID: -9132893696528004699, guid: 6ac7cc1e620ef494f83546ee1ee15973, type: 3}
+  - {fileID: -1250650651820844839, guid: b5b6f66a5acc75a42b654c3b8f35a166, type: 3}
 --- !u!114 &1410162007
 MonoBehaviour:
   m_ObjectHideFlags: 0
