@@ -89,7 +89,7 @@ public class basic_turret : MonoBehaviour
         GameObject bulletObj = Instantiate(bulletPrefab, firingPoint.position, Quaternion.identity);
         bullet bulletScript = bulletObj.GetComponent<bullet>();
         bulletScript.SetTarget(target);
-
+        AudioManager.Instance?.PlayShootBase();
     }
 
     private void FindTarget()

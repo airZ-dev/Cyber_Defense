@@ -89,6 +89,8 @@ public class Plot : MonoBehaviour
         if (!IsMouseInViewport())
             return;
 
+        
+
         Vector3 mouseWorldPos = GetMouseWorldPosition();
         if (mouseWorldPos == Vector3.zero)
             return;
@@ -105,6 +107,7 @@ public class Plot : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0))
             {
+                AudioManager.Instance?.ClickOnTile();
                 hideAllRanger();
                 OnTileClick(cellPos);
             }
@@ -193,7 +196,7 @@ public class Plot : MonoBehaviour
                 if (ft != null) ft.ShowRange();
 
                 ShotgunTurret st = towers[cellPos].GetComponent<ShotgunTurret>();
-                if (st != null) st.ShowRange(); 
+                if (st != null) st.ShowRange();
 
                 UpdateUI.ShowUpdatePanel(cellPos);
 

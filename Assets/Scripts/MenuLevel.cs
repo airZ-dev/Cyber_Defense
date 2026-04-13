@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -5,26 +6,40 @@ using UnityEngine.UI;
 
 public class SettingsMenu : MonoBehaviour
 {
+    [SerializeField] private GameObject menuPanel;
     [SerializeField] private GameObject settingsPanel;
-    [SerializeField] private Button settingsButton;
     [SerializeField] private Button menuButton;
+    [SerializeField] private Button backButtonMenu;
+    [SerializeField] private Button settingsButton;
+    [SerializeField] private Button backButton;
     [SerializeField] private Button resumeButton;
 
     private bool isPaused = false;
 
     private void Start()
     {
-        if (settingsButton != null)
-            settingsButton.onClick.AddListener(TogglePauseMenu);
-
         if (menuButton != null)
-            menuButton.onClick.AddListener(GoToMainMenu);
+            menuButton.onClick.AddListener(TogglePauseMenu);
+
+        if (backButton != null)
+            backButton.onClick.AddListener(GoToMainMenu);
+
+        if (settingsButton != null)
+            settingsButton.onClick.AddListener(ShowSettings);
 
         if (resumeButton != null)
             resumeButton.onClick.AddListener(ResumeGame);
 
+        if(backButtonMenu != null)
+            backButtonMenu.onClick.AddListener(QuickSettings);
+
         if (settingsPanel != null)
             settingsPanel.SetActive(false);
+    }
+
+    private void QuickSettings()
+    {
+       settingsPanel.SetActive(false);
     }
 
     public void TogglePauseMenu()
@@ -39,15 +54,23 @@ public class SettingsMenu : MonoBehaviour
     {
         LevelManager.instance.isActive = false;
         Time.timeScale = 0f;
-        settingsPanel.SetActive(true);
+        menuPanel.SetActive(true);
+        AudioManager.Instance?.PauseMusic(true);
     }
 
     public void ResumeGame()
     {
         LevelManager.instance.isActive = true;
         Time.timeScale = 1f;
-        settingsPanel.SetActive(false);
+        menuPanel.SetActive(false);
+        AudioManager.Instance?.PauseMusic(false);
     }
+
+    public void ShowSettings()
+    {
+        settingsPanel.SetActive(true);
+    }
+
 
     public void GoToMainMenu()
     {

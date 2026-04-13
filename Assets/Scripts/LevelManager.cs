@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -44,12 +45,13 @@ public class LevelManager : MonoBehaviour
     {
         if(currency == 0)
         {
-            currency = 48*2;
+            Console.WriteLine("error: currency is zero!");
         }
         isActive = true;
     }
     public void takeDamage(int amount)
     {
+        AudioManager.Instance?.PlayHitBase();
         currentHP -= amount;
         if (currentHP < 0)
         {
@@ -65,18 +67,22 @@ public class LevelManager : MonoBehaviour
     private void DEATH()
     {
         if (WinOrLossMenu.instance != null)
+            AudioManager.Instance?.PlayVictory();
             WinOrLossMenu.instance.winOrLoseWindowShow(false);
+
     }
 
     public void WIN()
     {
         if (WinOrLossMenu.instance != null)
+            AudioManager.Instance?.PlayGameOver();
             WinOrLossMenu.instance.winOrLoseWindowShow(true);
     }
 
     public void IncreaseCurrency(int amount)
     {
         currency += amount;
+        AudioManager.Instance?.PlayCurrency();
     }
 
     public bool SpendCurrency(int amount)

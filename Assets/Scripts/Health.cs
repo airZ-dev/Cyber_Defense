@@ -25,11 +25,13 @@ public class Health : MonoBehaviour
             LevelManager.instance.IncreaseCurrency(currancyWorth);
             isDestroyed = true;
             _healthbar.fillAmount = 0;
+            AudioManager.Instance?.PlayEnemyDeath();
             StartCoroutine(DeathAnimation());
         }
         else
         { 
             _healthbar.fillAmount = currentHP*1.0f / maxHP;
+            AudioManager.Instance?.PlayEnemyHit();
         }
     }
     private IEnumerator DeathAnimation()

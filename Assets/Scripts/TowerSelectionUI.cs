@@ -139,11 +139,12 @@ public class TowerSelectionUI : MonoBehaviour
     {
         if (LevelManager.instance.currency < tw.GetComponent<Tower>().currCost)
         {
-
+            AudioManager.Instance?.ErrorSound();
             return;
         }
         if (!tw.GetComponent<Tower>().isPosToUpgrade(currLvl + 1))
         {
+            AudioManager.Instance?.ErrorSound();
             return;
         }
         LevelManager.instance.currency -= tw.GetComponent<Tower>().currCost;
@@ -264,6 +265,7 @@ public class TowerSelectionUI : MonoBehaviour
         Vector3 worldPos = GetCorrectPlotWorldPosition(targetPlotPosition);
 
         GameObject tower = Instantiate(selectedTower.prefab, worldPos, Quaternion.identity);
+        AudioManager.Instance?.PlayBuildTower();
         BuildManager.Instance.dict[targetPlotPosition] = tower;
     }
 
