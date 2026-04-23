@@ -40,14 +40,29 @@ public class TowerSelectionUI : MonoBehaviour
         updatePanel.SetActive(false);
         if (TowerButtons != null)
         {
-            TowerButtons[0].onClick.AddListener(() => OnTowerSelected(0));
-            TowerButtons[1].onClick.AddListener(() => OnTowerSelected(1));
-            TowerButtons[2].onClick.AddListener(() => OnTowerSelected(2));
+            int i = 0;
+            if(TowerButtons.Length == 1)
+            {
+                TowerButtons[0].onClick.AddListener(() => OnTowerSelected(0));
+            }else if (TowerButtons.Length == 2)
+            {
+                TowerButtons[0].onClick.AddListener(() => OnTowerSelected(0));
+                TowerButtons[1].onClick.AddListener(() => OnTowerSelected(1));
+            }
+            else if (TowerButtons.Length == 3)
+            {
+
+                TowerButtons[0].onClick.AddListener(() => OnTowerSelected(0));
+                TowerButtons[1].onClick.AddListener(() => OnTowerSelected(1));
+                TowerButtons[2].onClick.AddListener(() => OnTowerSelected(2));
+            }
+            
+
 
         }
         if (updateButton != null)
             updateButton.onClick.AddListener(() => OnClickButtonUpdate());
-        foreach(var x in exitBtn)
+        foreach (var x in exitBtn)
             if (x != null)
                 x.onClick.AddListener(() => HideUpdatewPanel());
     }
@@ -98,7 +113,7 @@ public class TowerSelectionUI : MonoBehaviour
             if (ft != null) ft.HideRange();
 
             ShotgunTurret st = tw.GetComponent<ShotgunTurret>();
-            if(st != null) st.HideRange();
+            if (st != null) st.HideRange();
         }
 
 
@@ -117,7 +132,7 @@ public class TowerSelectionUI : MonoBehaviour
         }
 
         FreezeTurret ft = tw.GetComponent<FreezeTurret>();
-        if (ft!=null)
+        if (ft != null)
         {
             dmg = ft.Damage;          // не используется, но оставляем для совместимости
             spd = ft.SpeedOfSpawn;    // не используется
@@ -126,7 +141,7 @@ public class TowerSelectionUI : MonoBehaviour
         }
 
         ShotgunTurret st = tw.GetComponent<ShotgunTurret>();
-        if(st!= null)
+        if (st != null)
         {
             cntPellet = st.CounrOfBullets;
             dmg = st.Damage;
@@ -236,7 +251,7 @@ public class TowerSelectionUI : MonoBehaviour
         }
 
 
-        if(tw?.GetComponent<ShotgunTurret>() != null)
+        if (tw?.GetComponent<ShotgunTurret>() != null)
         {
             if (imagesRequire != null)
                 imageUpdate.GetComponent<Image>().sprite = imagesRequire[2];
@@ -261,7 +276,8 @@ public class TowerSelectionUI : MonoBehaviour
         }
         else
         {
-            BuildManager.Instance.setSelectedTower(-1);
+            AudioManager.Instance?.ErrorSound();
+            //BuildManager.Instance.setSelectedTower(-1);
         }
     }
 
