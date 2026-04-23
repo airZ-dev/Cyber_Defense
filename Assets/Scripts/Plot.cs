@@ -3,6 +3,7 @@ using UnityEngine.Tilemaps;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 public class Plot : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class Plot : MonoBehaviour
     [Header("Игнорируемые UI теги")]
     public string[] ignoreUITags = { };
 
+
+    public static Plot instance { get; private set; }
     private Vector3Int lastHoveredCell;
     private Camera mainCamera;
     private Dictionary<Vector3Int, GameObject> towers;
@@ -29,6 +32,7 @@ public class Plot : MonoBehaviour
     void Start()
     {
         mainCamera = Camera.main;
+        instance = this;
         if (tilemap == null)
             tilemap = GetComponent<Tilemap>();
         towers = BuildManager.Instance.dict;
@@ -213,6 +217,22 @@ public class Plot : MonoBehaviour
         else
         {
             // Debug.LogError("TowerSelectionUI не найден на сцене!");
+        }
+    }
+    public void RemoveTower(GameObject gg)
+    {
+        Vector3Int? cellToRemove = null;
+        foreach (var kvp in towers)
+        {
+            if (kvp.Value == gg)
+            {
+                cellToRemove = kvp.Key;
+                break;
+            }
+        }
+        if (cellToRemove != null)
+        {
+            towers.Remove(cellToRemove.Value);
         }
     }
 

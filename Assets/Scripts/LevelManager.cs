@@ -24,11 +24,11 @@ public class LevelManager : MonoBehaviour
     {
         if (_hps != null)
             _hps.text = $"{currentHP}";
-        if(_cur != null)
+        if (_cur != null)
             _cur.text = $"{currency}";
-        if(_wav != null)
+        if (_wav != null)
         {
-            _wav.text = $"{WaveManager.instance.current_wave+1}|{WaveManager.instance.max_wave}";
+            _wav.text = $"{WaveManager.instance.current_wave + 1}|{WaveManager.instance.max_wave}";
 
         }
     }
@@ -38,12 +38,12 @@ public class LevelManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
-        currentHP= baseHP;
+        currentHP = baseHP;
     }
 
     private void Start()
     {
-        if(currency == 0)
+        if (currency == 0)
         {
             Console.WriteLine("error: currency is zero!");
         }
@@ -58,7 +58,7 @@ public class LevelManager : MonoBehaviour
             currentHP = 0;
         }
         //_hp.fillAmount = currentHP * 1.0f / baseHP;
-        if(currentHP == 0)
+        if (currentHP == 0)
         {
             DEATH();
             return;
@@ -67,16 +67,23 @@ public class LevelManager : MonoBehaviour
     private void DEATH()
     {
         if (WinOrLossMenu.instance != null)
-            AudioManager.Instance?.PlayVictory();
+        {
+            AudioManager.Instance?.PlayGameOver();
+            AudioManager.Instance?.PauseMusic(true);
             WinOrLossMenu.instance.winOrLoseWindowShow(false);
+        }
 
     }
 
     public void WIN()
     {
         if (WinOrLossMenu.instance != null)
-            AudioManager.Instance?.PlayGameOver();
+        {
+            AudioManager.Instance?.PlayVictory();
+            AudioManager.Instance?.PauseMusic(true);
             WinOrLossMenu.instance.winOrLoseWindowShow(true);
+        }
+        
     }
 
     public void IncreaseCurrency(int amount)

@@ -7,6 +7,8 @@ using UnityEngine.Windows.Speech;
 
 public class TowerSelectionUI : MonoBehaviour
 {
+
+    public static TowerSelectionUI instance { get; private set; }
     public GameObject selectionPanel;
     public Button[] TowerButtons;
     public GameObject updatePanel;
@@ -25,6 +27,7 @@ public class TowerSelectionUI : MonoBehaviour
     private float spread;
     private int cntPellet;
 
+
     [Header("References")]
     [SerializeField] private TextMeshProUGUI[] updatePanelTexts;
     [SerializeField] private Image imageUpdate;
@@ -32,6 +35,7 @@ public class TowerSelectionUI : MonoBehaviour
     void Start()
     {
         mainCamera = Camera.main;
+        instance = this;
         selectionPanel.SetActive(false);
         updatePanel.SetActive(false);
         if (TowerButtons != null)
@@ -131,7 +135,11 @@ public class TowerSelectionUI : MonoBehaviour
         }
         //реализовать для других турелей
         // else { }
-
+        Tower x = tw?.GetComponent<Tower>();
+        if (x != null && x.costSell == 0)
+        {
+            x.costSell = x.buyCost / 2;
+        }
         updatePanel.SetActive(true);
     }
 
@@ -148,7 +156,7 @@ public class TowerSelectionUI : MonoBehaviour
             return;
         }
         LevelManager.instance.currency -= tw.GetComponent<Tower>().currCost;
-
+        tw.GetComponent<Tower>().costSell += tw.GetComponent<Tower>().currCost / 2;
         // Увеличение характеристик в зависимости от типа
         basic_turret bt = tw.GetComponent<basic_turret>();
         if (bt != null)
@@ -205,6 +213,8 @@ public class TowerSelectionUI : MonoBehaviour
         }
         foreach (var t in updatePanelTexts)
             t.text = "";
+
+        if (tw == null) return;
         if (tw?.GetComponent<basic_turret>() != null)
         {
             if (imagesRequire != null)
@@ -235,6 +245,7 @@ public class TowerSelectionUI : MonoBehaviour
             updatePanelTexts[2].text = "Урон одной пульки - " + dmg + "\nТочность - " + spread + "\nКоличество - " + cntPellet;
             updatePanelTexts[3].text = currLvl + "/" + tw.GetComponent<Tower>().maxLvl + " уровень\n" + "цена: " + tw.GetComponent<Tower>().currCost;
         }
+        SellMenu.instance?.setTower(tw);
     }
 
     void OnTowerSelected(int towerIndex)
@@ -242,10 +253,10 @@ public class TowerSelectionUI : MonoBehaviour
         //Debug.Log($"Выбрана башня с индексом: {towerIndex}");
         BuildManager.Instance.setSelectedTower(towerIndex);
 
-        if (LevelManager.instance.currency >= BuildManager.Instance.getSelectedTower().butCost)
+        if (LevelManager.instance.currency >= BuildManager.Instance.getSelectedTower().buyCost)
         {
             BuildTower(towerIndex);
-            LevelManager.instance.currency -= BuildManager.Instance.getSelectedTower().butCost;
+            LevelManager.instance.currency -= BuildManager.Instance.getSelectedTower().buyCost;
             HideSelectionPanel();
         }
         else
