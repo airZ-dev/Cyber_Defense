@@ -40,7 +40,6 @@ public class TowerSelectionUI : MonoBehaviour
         updatePanel.SetActive(false);
         if (TowerButtons != null)
         {
-            int i = 0;
             if(TowerButtons.Length == 1)
             {
                 TowerButtons[0].onClick.AddListener(() => OnTowerSelected(0));
@@ -237,7 +236,10 @@ public class TowerSelectionUI : MonoBehaviour
             updatePanelTexts[0].text = "Скорость - " + string.Format("{0:f2}", 1 / spd) + " в сек.";
             updatePanelTexts[1].text = "Радиус - " + range;
             updatePanelTexts[2].text = "Урон - " + dmg;
-            updatePanelTexts[3].text = currLvl + "/" + tw.GetComponent<Tower>().maxLvl + " уровень\n" + "цена: " + tw.GetComponent<Tower>().currCost;
+            if (tw?.GetComponent<Tower>().maxLvl ==  currLvl)
+                updatePanelTexts[3].text = currLvl + "/" + tw.GetComponent<Tower>().maxLvl + " уровень\n" + " - ";
+            else
+                updatePanelTexts[3].text = currLvl + "/" + tw.GetComponent<Tower>().maxLvl + " уровень\n" + "цена: " + tw.GetComponent<Tower>().currCost;
         }
 
         if (tw?.GetComponent<FreezeTurret>() != null)
@@ -247,7 +249,10 @@ public class TowerSelectionUI : MonoBehaviour
             updatePanelTexts[0].text = "Скорость - " + string.Format("{0:f2}", 1 / spd) + " в сек."; // если нужно, можно хранить rotationSpeed
             updatePanelTexts[1].text = "Радиус - " + range;
             updatePanelTexts[2].text = $"Заморозка - {((1 - freezeFactor) * 100):F0}%"; // чем меньше freezeFactor, тем сильнее эффект
-            updatePanelTexts[3].text = currLvl + "/" + tw.GetComponent<Tower>().maxLvl + " уровень\n" + "цена: " + tw.GetComponent<Tower>().currCost;
+            if (tw?.GetComponent<Tower>().maxLvl == currLvl)
+                updatePanelTexts[3].text = currLvl + "/" + tw.GetComponent<Tower>().maxLvl + " уровень\n" + " - ";
+            else
+                updatePanelTexts[3].text = currLvl + "/" + tw.GetComponent<Tower>().maxLvl + " уровень\n" + "цена: " + tw.GetComponent<Tower>().currCost;
         }
 
 
@@ -258,7 +263,10 @@ public class TowerSelectionUI : MonoBehaviour
             updatePanelTexts[0].text = "Скорость - " + string.Format("{0:f2}", 1 / spd) + " в сек.";
             updatePanelTexts[1].text = "Радиус - " + range;
             updatePanelTexts[2].text = "Урон одной пульки - " + dmg + "\nТочность - " + spread + "\nКоличество - " + cntPellet;
-            updatePanelTexts[3].text = currLvl + "/" + tw.GetComponent<Tower>().maxLvl + " уровень\n" + "цена: " + tw.GetComponent<Tower>().currCost;
+            if (tw?.GetComponent<Tower>().maxLvl == currLvl)
+                updatePanelTexts[3].text = currLvl + "/" + tw.GetComponent<Tower>().maxLvl + " уровень\n" + " - ";
+            else
+                updatePanelTexts[3].text = currLvl + "/" + tw.GetComponent<Tower>().maxLvl + " уровень\n" + "цена: " + tw.GetComponent<Tower>().currCost;
         }
         SellMenu.instance?.setTower(tw);
     }

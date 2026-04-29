@@ -43,13 +43,13 @@ public class AudioManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+           // DontDestroyOnLoad(gameObject);
             InitAudioSources();
         }
-        else
-        {
-            Destroy(gameObject);
-        }
+        //else
+        //{
+        //    Destroy(gameObject);
+        //}
 
         if(defaultButtons != null && defaultButtons.Length > 0)
         {
