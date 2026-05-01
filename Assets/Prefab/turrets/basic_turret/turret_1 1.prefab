@@ -116,6 +116,7 @@ MonoBehaviour:
   targetRange: 6
   angleSpeed: 80
   bps: 0.75
+  targetStrategy: 0
   turretRotationPoint: {fileID: 5942342537853997571}
   enemyMask:
     serializedVersion: 2

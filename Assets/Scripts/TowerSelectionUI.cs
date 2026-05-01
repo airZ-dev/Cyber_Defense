@@ -175,7 +175,7 @@ public class TowerSelectionUI : MonoBehaviour
         basic_turret bt = tw.GetComponent<basic_turret>();
         if (bt != null)
         {
-            dmg += 1;
+            dmg += 3;
             spd -= 0.01f; // скорострельность увеличивается
             range += 0.5f;
             currLvl += 1;
