@@ -137,7 +137,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   freezeRange: 5
   rotationSpeed: 30
-  freezeFactor: 0.47
+  freezeFactor: 0.5
   checkInterval: 0.2
   rotatingPart: {fileID: 1779448975591056425}
   freezeEffect: {fileID: 4812534105559931611}

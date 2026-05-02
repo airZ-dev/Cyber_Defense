@@ -14,7 +14,7 @@ public class bullet : MonoBehaviour
 
     private Transform target;
 
-    public int Damage { get { return bulletDamage; } }
+    public int Damage { get { return bulletDamage; } set { bulletDamage = value; } }
 
     public void SetTarget(Transform _target)
     {

@@ -22,14 +22,12 @@ public class FreezeTurret : MonoBehaviour
     private List<Enemy> enemiesInRange = new List<Enemy>();
     private float timer;
 
-    // Свойства для доступа извне
+    // Свойства для доступа извнеолдр
     public float Range { get => freezeRange; set => freezeRange = value; }
     public float FreezeFactor
     {
-        get => freezeFactor; set
-        {
-            if (((1 - freezeFactor) * 100) <= 80) freezeFactor = value;
-        }
+        get => freezeFactor;
+        set => freezeFactor = Mathf.Clamp(value, 0.1f, 1f);
     }
     public int Damage { get => damage; set => damage = value; }
     public float SpeedOfSpawn { get => speedOfSpawn; set => speedOfSpawn = value; }

@@ -192,7 +192,7 @@ public class TowerSelectionUI : MonoBehaviour
         {
             // Для замораживающей турели улучшаем радиус и силу заморозки
             range += 0.5f;
-            freezeFactor = Mathf.Max(0, freezeFactor - 0.001f); // приближаем к 0 (сильнее мороз)
+            freezeFactor -= 0.04f; //увеличиваем уровень заморозки на 4% при прокачке
             currLvl += 1;
             tw.GetComponent<Tower>().currCost += 20;
             tw.GetComponent<Tower>().currentLevel = currLvl;

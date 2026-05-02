@@ -504,6 +504,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76063499839c24d45acf454e09d9c104, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 90
+  maxHP: 100
   currancyWorth: 40
   _healthbar: {fileID: 9159905357886246366}
