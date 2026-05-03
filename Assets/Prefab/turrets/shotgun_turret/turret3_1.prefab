@@ -61,6 +61,7 @@ MonoBehaviour:
   angleSpeed: 80
   bps: 0.75
   bulletDamage: 15
+  targetStrategy: 0
 --- !u!114 &2994842262223131268
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,8 +75,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MaxLevel: 10
-  CostOfUpg: 20
-  CostOfBuy: 30
+  CostOfUpg: 50
+  CostOfBuy: 100
   prefab: {fileID: 701612806357855292}
   currentLevel: 1
 --- !u!1 &944375069901879734
