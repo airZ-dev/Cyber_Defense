@@ -3185,7 +3185,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.44, y: 0.17, z: -10}
+  m_LocalPosition: {x: -7.44, y: -12.92, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3208,8 +3208,8 @@ MonoBehaviour:
   useBounds: 1
   minX: -20
   maxX: 6
-  minY: -10
-  maxY: 4
+  minY: -15
+  maxY: 0
 --- !u!114 &519420034
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3222,10 +3222,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 178530b7dc1114149abbab4a2194865c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  zoomSpeed: 2
-  minZoom: 2
-  maxZoom: 50
-  initialZoom: 15
+  zoomSpeed: 4
+  minZoom: 20
+  maxZoom: 36
+  initialZoom: 27
 --- !u!1 &531910301
 GameObject:
   m_ObjectHideFlags: 0
@@ -43217,7 +43217,7 @@ MonoBehaviour:
   musicVolume: 0.5
   shootSoundBase: {fileID: 8300000, guid: 5f1bc3b434c6f4f4991a2fb7a5f698a9, type: 3}
   shootSoundFreeze: {fileID: 0}
-  shootSoundShootgn: {fileID: 0}
+  shootSoundShootgn: {fileID: 8300000, guid: 3e78b2ee350b7fc4bac634d11b12badd, type: 3}
   towerBuildSound: {fileID: 8300000, guid: f38287be265ccd34086a56d5e8d8a818, type: 3}
   enemyHitSound: {fileID: 8300000, guid: fc28d6e21b20c9f408f93bb4a4583b17, type: 3}
   enemyDeathSound: {fileID: 8300000, guid: e40ebba54940e54468f3f3e3025f128f, type: 3}

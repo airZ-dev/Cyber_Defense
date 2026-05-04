@@ -213,12 +213,8 @@ public class ShotgunTurret : MonoBehaviour
             {
                 bulletScript.Initialize(shootDir);
             }
-            else
-            {
-                // fallback: если префаб не содержит ShotgunBullet, используем стандартную пулю (не рекомендуется)
-                Debug.LogWarning("ShotgunTurret: bullet prefab missing ShotgunBullet component!");
-            }
         }
+        AudioManager.Instance?.PlayShootShootgn();
     }
 
     // Остальная логика (Update, FindTarget, RotateToTarget) наследуется от basic_turret.
