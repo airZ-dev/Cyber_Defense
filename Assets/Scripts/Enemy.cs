@@ -47,20 +47,30 @@ public class Enemy : MonoBehaviour
         if (!isMoving || waypoints == null || waypoints.Length == 0) return;
 
         MoveAlongPath();
+        UpdateProgress();
     }
-
     private void MoveAlongPath()
     {
-        if (Vector2.Distance(target.position, transform.position) <= 0.1f)
-        {
-            ++currentWaypointIndex;
-        }
+        if (waypoints == null || waypoints.Length == 0) return;
+
         if (currentWaypointIndex >= waypoints.Length)
         {
             ReachedEnd();
             return;
         }
+
         target = waypoints[currentWaypointIndex];
+
+        if (Vector2.Distance(target.position, transform.position) <= 0.1f)
+        {
+            currentWaypointIndex++;
+            if (currentWaypointIndex >= waypoints.Length)
+            {
+                ReachedEnd();
+                return;
+            }
+            target = waypoints[currentWaypointIndex];
+        }
     }
 
     private void ReachedEnd()
@@ -91,7 +101,7 @@ public class Enemy : MonoBehaviour
         }
 
         enemy_transform.localScale = targetScale;
-       WaveManager.onEnemyDestroy?.Invoke();
+        WaveManager.onEnemyDestroy?.Invoke();
         Destroy(gameObject);
     }
 
@@ -100,13 +110,10 @@ public class Enemy : MonoBehaviour
         if (isSlowed) return;
         moveSpeed *= slowFactor;
         isSlowed = true;
-
-        // Если slowFactor == 0, значит полная заморозка — меняем цвет
         if (slowFactor == 0f)
             SetFrozenVisual(true);
     }
 
-    // Изменить RemoveSlowness
     public void RemoveSlowness()
     {
         if (!isSlowed) return;
@@ -115,11 +122,42 @@ public class Enemy : MonoBehaviour
         SetFrozenVisual(false);
     }
 
-    // Добавить вспомогательный метод
     private void SetFrozenVisual(bool frozen)
     {
         if (spriteRenderer != null)
             spriteRenderer.color = frozen ? Color.cyan : originalColor;
+    }
+
+    private void UpdateProgress()
+    {
+        if (waypoints == null || waypoints.Length == 0)
+        {
+            Progress = 0f;
+            return;
+        }
+
+        float totalPassed = 0f;
+        for (int i = 0; i < currentWaypointIndex - 1; i++)
+        {
+            totalPassed += Vector2.Distance(waypoints[i].position, waypoints[i + 1].position);
+        }
+
+
+        if (currentWaypointIndex < waypoints.Length)
+        {
+          
+            Vector3 startPoint = currentWaypointIndex > 0
+                ? waypoints[currentWaypointIndex - 1].position
+                : LevelManager.instance.startPoint.position;
+            totalPassed += Vector2.Distance(startPoint, transform.position);
+         
+        }
+        else
+        {
+            for (int i = 0; i < waypoints.Length - 1; i++)
+                totalPassed += Vector2.Distance(waypoints[i].position, waypoints[i + 1].position);
+        }
+        Progress = totalPassed;
     }
 
 }

@@ -5,12 +5,6 @@ using static basic_turret;
 
 public class ShotgunTurret : MonoBehaviour
 {
-    public enum TargetStrategy
-    {
-        Closest,   // ближайший по расстоянию
-        First,     // самый старый (наибольший прогресс по пути)
-        Last       // самый новый (наименьший прогресс)
-    }
 
 
     [Header("Shotgun Settings")]
@@ -25,9 +19,11 @@ public class ShotgunTurret : MonoBehaviour
     [SerializeField] private float angleSpeed = 1.0f;
     [SerializeField] private float bps = 1f; // пулей в секунду
     [SerializeField] private int bulletDamage = 15;
-    [SerializeField] private TargetStrategy targetStrategy = TargetStrategy.Closest;
+
     private Transform target;
     private float timeUntilFire;
+    private TargetStrategy targetStrategy;
+    public bool isChanged;
 
     public float Range { get { return targetRange; } set { targetRange = value; } }
     public int CounrOfBullets { get { return pelletCount; } set { pelletCount = value; } }
@@ -35,7 +31,7 @@ public class ShotgunTurret : MonoBehaviour
 
     public float Spread { get { return spreadAngle; } set { spreadAngle = value; } }
 
-
+    public float SpeedOfSpawn { get => bps; set => bps = value; }
     // Переопределяем выстрел
     private void Awake()
     {
@@ -64,12 +60,19 @@ public class ShotgunTurret : MonoBehaviour
 
     private void Update()
     {
+
         if (target == null)
         {
             FindTarget();
             return;
         }
-        //Debug.Log(CheckTargetForward());
+        if (isChanged)
+        {
+            isChanged = false;
+            target = null;
+            return;
+        }
+
         RotateToTarget();
         if (!CheckTargetInRange())
         {
@@ -97,8 +100,9 @@ public class ShotgunTurret : MonoBehaviour
             return;
         }
 
-        List<Transform> enemies = hits.Select(h => h.transform).ToList();
+        List<Transform> enemies = hits.Select(h => h.transform).OrderBy(x => Vector3.Distance(x.position, LevelManager.instance.path[^1].position)).ToList();
 
+        targetStrategy = gameObject.GetComponent<Tower>().Strategy;
         switch (targetStrategy)
         {
             case TargetStrategy.Closest:
@@ -106,53 +110,20 @@ public class ShotgunTurret : MonoBehaviour
                 break;
 
             case TargetStrategy.First:
-                target = GetByProgress(enemies, first: true);
+
+                target = enemies[0];
                 break;
 
             case TargetStrategy.Last:
-                target = GetByProgress(enemies, first: false);
+                target = enemies[^1];
                 break;
         }
+
     }
 
-    private Transform GetByProgress(List<Transform> enemies, bool first)
-    {
-        // Пытаемся получить компонент Enemy (или любой с полем progress)
-        var withProgress = enemies.Select(e => new { transform = e, progress = GetProgress(e) })
-                                  .Where(x => x.progress.HasValue)
-                                  .ToList();
 
-        if (withProgress.Count == 0)
-        {
-            // Fallback на ближайшего, если прогресс не найден
-            Debug.LogWarning($"{name}: нет врагов с Progress, стратегия First/Last заменена на Closest");
-            return enemies.OrderBy(e => Vector2.Distance(e.position, transform.position)).FirstOrDefault();
-        }
 
-        if (first)
-            return withProgress.OrderByDescending(x => x.progress.Value).First().transform;
-        else
-            return withProgress.OrderBy(x => x.progress.Value).First().transform;
-    }
 
-    private float? GetProgress(Transform enemy)
-    {
-        // Предполагаем, что у врага есть скрипт с полем progress
-        // Замените "Enemy" на имя вашего класса врага
-        var enemyScript = enemy.GetComponent<Enemy>();
-        if (enemyScript != null)
-            return enemyScript.Progress;
-
-        // Альтернатива: поиск поля через рефлексию (медленно, но универсально)
-        var component = enemy.GetComponent<MonoBehaviour>();
-        if (component != null)
-        {
-            var field = component.GetType().GetField("progress");
-            if (field != null)
-                return (float)field.GetValue(component);
-        }
-        return null;
-    }
 
 
     private bool CheckTargetInRange()

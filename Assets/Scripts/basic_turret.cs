@@ -1,26 +1,20 @@
-using System;
+п»їusing System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEditor;
 using UnityEngine;
 using static basic_turret;
+using static ShotgunTurret;
 
 
 public class basic_turret : MonoBehaviour
 {
-    public enum TargetStrategy
-    {
-        Closest,   // ближайший по расстоянию
-        First,     // самый старый (наибольший прогресс по пути)
-        Last       // самый новый (наименьший прогресс)
-    }
 
     [Header("Attributes")]
     [SerializeField] protected float targetRange = 5f;
     [SerializeField] protected float angleSpeed = 1.0f;
-    [SerializeField] protected float bps = 1f; // пулей в секунду
-    [SerializeField] private TargetStrategy targetStrategy = TargetStrategy.Closest;
+    [SerializeField] protected float bps = 1f; // РїСѓР»РµР№ РІ СЃРµРєСѓРЅРґСѓ
 
     [Header("References")]
     [SerializeField] protected Transform turretRotationPoint;
@@ -35,12 +29,17 @@ public class basic_turret : MonoBehaviour
 
     protected int bulletDamage;
     protected Transform target;
+
     private float timeUntilFire;
+    private TargetStrategy targetStrategy;
+    public bool isChanged;
+
     protected void Awake()
     {
         ChangeRange(targetRange);
         bulletDamage = bulletPrefab.GetComponent<bullet>().Damage;
         HideRange();
+
     }
 
     public void ChangeRange(float range)
@@ -60,12 +59,19 @@ public class basic_turret : MonoBehaviour
     }
     private void Update()
     {
+
         if (target == null)
         {
             FindTarget();
             return;
         }
-        //Debug.Log(CheckTargetForward());
+        if (isChanged)
+        {
+            isChanged = false;
+            target = null;
+            return;
+        }
+
         RotateToTarget();
         if (!CheckTargetInRange())
         {
@@ -95,7 +101,8 @@ public class basic_turret : MonoBehaviour
 
     private void FindTarget()
     {
-        RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, targetRange, (Vector2)transform.position, 0f, enemyMask);
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(
+        transform.position, targetRange, (Vector2)transform.position, 0f, enemyMask);
 
         if (hits.Length == 0)
         {
@@ -104,6 +111,9 @@ public class basic_turret : MonoBehaviour
         }
 
         List<Transform> enemies = hits.Select(h => h.transform).ToList();
+        targetStrategy = GetComponent<Tower>().Strategy;
+
+
 
         switch (targetStrategy)
         {
@@ -112,63 +122,22 @@ public class basic_turret : MonoBehaviour
                 break;
 
             case TargetStrategy.First:
-                target = GetByProgress(enemies, first: true);
+                target = target = enemies
+                    .OrderByDescending(e => e.GetComponent<Enemy>().Progress)
+                    .FirstOrDefault();
                 break;
-
             case TargetStrategy.Last:
-                target = GetByProgress(enemies, first: false);
+                target = target = enemies
+                .OrderBy(e => e.GetComponent<Enemy>().Progress)
+                .FirstOrDefault();
                 break;
         }
     }
 
-    private Transform GetByProgress(List<Transform> enemies, bool first)
-    {
-        // Пытаемся получить компонент Enemy (или любой с полем progress)
-        var withProgress = enemies.Select(e => new { transform = e, progress = GetProgress(e) })
-                                  .Where(x => x.progress.HasValue)
-                                  .ToList();
-
-        if (withProgress.Count == 0)
-        {
-            // Fallback на ближайшего, если прогресс не найден
-            Debug.LogWarning($"{name}: нет врагов с Progress, стратегия First/Last заменена на Closest");
-            return enemies.OrderBy(e => Vector2.Distance(e.position, transform.position)).FirstOrDefault();
-        }
-
-        if (first)
-            return withProgress.OrderByDescending(x => x.progress.Value).First().transform;
-        else
-            return withProgress.OrderBy(x => x.progress.Value).First().transform;
-    }
-
-    private float? GetProgress(Transform enemy)
-    {
-        // Предполагаем, что у врага есть скрипт с полем progress
-        // Замените "Enemy" на имя вашего класса врага
-        var enemyScript = enemy.GetComponent<Enemy>();
-        if (enemyScript != null)
-            return enemyScript.Progress;
-
-        // Альтернатива: поиск поля через рефлексию (медленно, но универсально)
-        var component = enemy.GetComponent<MonoBehaviour>();
-        if (component != null)
-        {
-            var field = component.GetType().GetField("progress");
-            if (field != null)
-                return (float)field.GetValue(component);
-        }
-        return null;
-    }
 
     private bool CheckTargetInRange()
     {
         return target != null && Vector2.Distance(target.position, transform.position) <= targetRange;
-        //return Vector2.Distance(target.position, transform.position) <= targetRange;
-    }
-    private bool CheckTargetForward()
-    {
-        float angle = Mathf.Atan2(target.position.y - transform.position.y, target.position.x - transform.position.x) * Mathf.Rad2Deg - 90.0f;
-        return angle <= target.rotation.z || angle > target.rotation.z;
     }
 
     private void RotateToTarget()

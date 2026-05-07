@@ -45,8 +45,12 @@ public class SellMenu : MonoBehaviour
         Plot.instance?.RemoveTower(towerToSell);
         if (towerToSell != null)
         {
-            Destroy(towerToSell);
+            if (towerToSell.GetComponent<FreezeTurret>() != null)
+                towerToSell.GetComponent<FreezeTurret>().OnDestroyThis();
+            else
+                Destroy(towerToSell);
         }
+
         sellPanel.SetActive(false);
         LevelManager.instance.isActive = true;
 

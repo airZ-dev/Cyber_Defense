@@ -109,7 +109,7 @@ public class FreezeTurret : MonoBehaviour
         enemy.ApplyEffectSlowness(freezeFactor); // freezeFactor = 0 для полной остановки
     }
 
-    private void RemoveFreeze(Enemy enemy)
+    public void RemoveFreeze(Enemy enemy)
     {
         enemy.RemoveSlowness();
     }
@@ -147,5 +147,16 @@ public class FreezeTurret : MonoBehaviour
     {
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, freezeRange);
+    }
+
+    public void OnDestroyThis()
+    {
+        foreach (var enemy in enemiesInRange)
+        {
+            RemoveFreeze(enemy);
+        }
+
+        Destroy(gameObject);
+
     }
 }

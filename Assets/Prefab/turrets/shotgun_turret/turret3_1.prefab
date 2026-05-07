@@ -58,10 +58,10 @@ MonoBehaviour:
   firingPoint: {fileID: 6833818452040383790}
   rangeView: {fileID: 3410669671594138597}
   targetRange: 6
-  angleSpeed: 80
+  angleSpeed: 210
   bps: 0.75
   bulletDamage: 15
-  targetStrategy: 0
+  isChanged: 0
 --- !u!114 &2994842262223131268
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -77,6 +77,7 @@ MonoBehaviour:
   MaxLevel: 10
   CostOfUpg: 50
   CostOfBuy: 100
+  str: 0
   prefab: {fileID: 701612806357855292}
   currentLevel: 1
 --- !u!1 &944375069901879734

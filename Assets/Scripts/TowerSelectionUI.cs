@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -26,18 +27,23 @@ public class TowerSelectionUI : MonoBehaviour
     private float freezeFactor;
     private float spread;
     private int cntPellet;
-
+    private bool isNotFreeze;
+    private ToggleGroup radios;
+    private TargetStrategy targetStrategy;
 
     [Header("References")]
     [SerializeField] private TextMeshProUGUI[] updatePanelTexts;
     [SerializeField] private Image imageUpdate;
     [SerializeField] private Sprite[] imagesRequire;
+    [SerializeField] private GameObject radioField;
+
     void Start()
     {
         mainCamera = Camera.main;
         instance = this;
         selectionPanel.SetActive(false);
         updatePanel.SetActive(false);
+        radioField.SetActive(false);
         if (TowerButtons != null)
         {
             if(TowerButtons.Length == 1)
@@ -55,8 +61,6 @@ public class TowerSelectionUI : MonoBehaviour
                 TowerButtons[1].onClick.AddListener(() => OnTowerSelected(1));
                 TowerButtons[2].onClick.AddListener(() => OnTowerSelected(2));
             }
-            
-
 
         }
         if (updateButton != null)
@@ -64,28 +68,29 @@ public class TowerSelectionUI : MonoBehaviour
         foreach (var x in exitBtn)
             if (x != null)
                 x.onClick.AddListener(() => HideUpdatewPanel());
+        radios = radioField.GetComponent<ToggleGroup>();
+        
     }
 
-    /*void Update()
+    public void OnChanged(int i)
     {
-        if (selectionPanel.activeInHierarchy && Input.GetMouseButtonDown(0))
-        {
-            if (!RectTransformUtility.RectangleContainsScreenPoint(
-                selectionPanel.GetComponent<RectTransform>(),
-                Input.mousePosition,
-                null))
-            {
-                HideSelectionPanel();
-            }
-        }
-    }*/
+        if (tw.GetComponent<Tower>().Strategy == (TargetStrategy)i)
+            return;
+        tw.GetComponent<Tower>().Strategy = (TargetStrategy) i;
+
+        basic_turret bt = tw.GetComponent<basic_turret>();
+        if (bt != null) bt.isChanged = true;
+
+        ShotgunTurret st = tw.GetComponent<ShotgunTurret>();
+        if (st != null) st.isChanged = true;
+    }
+
 
     public void ShowSelectionPanel(Vector3Int plotPos)
     {
         HideUpdatewPanel();
         targetPlotPosition = plotPos;
         selectionPanel.SetActive(true);
-        //Debug.Log(selectionPanel.activeSelf);
     }
 
     public void HideSelectionPanel()
@@ -114,7 +119,7 @@ public class TowerSelectionUI : MonoBehaviour
             ShotgunTurret st = tw.GetComponent<ShotgunTurret>();
             if (st != null) st.HideRange();
         }
-
+        radioField.SetActive(false);
 
     }
     public void ShowUpdatePanel(Vector3Int cellPos)
@@ -122,14 +127,17 @@ public class TowerSelectionUI : MonoBehaviour
         HideSelectionPanel();
         tw = BuildManager.Instance.dict[cellPos];
         currLvl = tw.GetComponent<Tower>().currentLevel;
+
         basic_turret bt = tw.GetComponent<basic_turret>();
         if (bt != null)
         {
             dmg = bt.Damage;
             spd = bt.SpeedOfSpawn;
             range = bt.Range;
+            targetStrategy = bt.GetComponent<Tower>().Strategy;
         }
 
+        isNotFreeze = true;
         FreezeTurret ft = tw.GetComponent<FreezeTurret>();
         if (ft != null)
         {
@@ -137,6 +145,7 @@ public class TowerSelectionUI : MonoBehaviour
             spd = ft.SpeedOfSpawn;    // не используется
             range = ft.Range;
             freezeFactor = ft.FreezeFactor;
+            isNotFreeze = false;
         }
 
         ShotgunTurret st = tw.GetComponent<ShotgunTurret>();
@@ -146,6 +155,8 @@ public class TowerSelectionUI : MonoBehaviour
             dmg = st.Damage;
             spread = st.Spread;
             range = st.Range;
+            spd = st.SpeedOfSpawn;
+            targetStrategy = st.GetComponent<Tower>().Strategy;
         }
         //реализовать для других турелей
         // else { }
@@ -154,6 +165,20 @@ public class TowerSelectionUI : MonoBehaviour
         {
             x.costSell = x.buyCost / 2;
         }
+        if (isNotFreeze) {
+            radioField.SetActive(true);
+            int ind = (int)tw.GetComponent<Tower>().Strategy;
+            Toggle[] tt = radioField.GetComponentsInChildren<Toggle>(true);
+            for (int i = 0; i < tt.Length; i++)
+            {
+                tt[i].SetIsOnWithoutNotify(false);
+                if(i == ind)
+                {
+                    tt[i].SetIsOnWithoutNotify(true);
+                }
+            }
+        }
+
         updatePanel.SetActive(true);
     }
 
@@ -262,7 +287,7 @@ public class TowerSelectionUI : MonoBehaviour
                 imageUpdate.GetComponent<Image>().sprite = imagesRequire[2];
             updatePanelTexts[0].text = "Скорость - " + string.Format("{0:f2}", 1 / spd) + " в сек.";
             updatePanelTexts[1].text = "Радиус - " + range;
-            updatePanelTexts[2].text = "Урон одной пульки - " + dmg + "\nТочность - " + spread + "\nКоличество - " + cntPellet;
+            updatePanelTexts[2].text = "Урон - " + dmg + "\nТочность - " + spread + "\nКоличество - " + cntPellet;
             if (tw?.GetComponent<Tower>().maxLvl == currLvl)
                 updatePanelTexts[3].text = currLvl + "/" + tw.GetComponent<Tower>().maxLvl + " уровень\n" + " - ";
             else
