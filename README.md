@@ -1,6 +1,3 @@
-<img width="1920" height="1080" alt="Pasted image 20260508204933" src="https://github.com/user-attachments/assets/df3c1ef9-2173-4e19-8e0f-33180d956f8a" /># CyberDefense
----
-
 Репозиторий команды **"Cyber_Defense"** — проекта для дисциплины **"Проектная деятельность"** ЮФУ иММиКН им. И.И.Воровича 25' - 26'
 🎮 **Платформа:** Windows
 🛠️ **Технологии:** Unity (C#)
