@@ -1823,7 +1823,7 @@ MonoBehaviour:
   imagesRequire:
   - {fileID: -9132893696528004699, guid: 6ac7cc1e620ef494f83546ee1ee15973, type: 3}
   - {fileID: -1250650651820844839, guid: b5b6f66a5acc75a42b654c3b8f35a166, type: 3}
-  - {fileID: -1250650651820844839, guid: b5b6f66a5acc75a42b654c3b8f35a166, type: 3}
+  - {fileID: 2215201408695234654, guid: 5d184e05e12abaa48acb06d79a9dba5f, type: 3}
   radioField: {fileID: 1717721455}
 --- !u!114 &333729208
 MonoBehaviour:
@@ -54963,7 +54963,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.0021362305, y: -0.00036621}
+  m_AnchoredPosition: {x: 0.0021362305, y: -0.00036621094}
   m_SizeDelta: {x: 1346, y: 758.35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1011278392
