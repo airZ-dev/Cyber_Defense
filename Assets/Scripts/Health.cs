@@ -16,7 +16,7 @@ public class Health : MonoBehaviour
     {
         currentHP = maxHP;
     }
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, bool isShootGun)
     {
         currentHP -= damage;
         if (currentHP <= 0 && !isDestroyed)
@@ -25,11 +25,14 @@ public class Health : MonoBehaviour
             LevelManager.instance.IncreaseCurrency(currancyWorth);
             isDestroyed = true;
             _healthbar.fillAmount = 0;
+            AudioManager.Instance?.PlayEnemyDeath();
             StartCoroutine(DeathAnimation());
         }
         else
         { 
             _healthbar.fillAmount = currentHP*1.0f / maxHP;
+            if(!isShootGun)
+                AudioManager.Instance?.PlayEnemyHit();
         }
     }
     private IEnumerator DeathAnimation()

@@ -91,6 +91,7 @@ public class WaveManager : MonoBehaviour
         if (waitForStart && !isSpawning)
         {
             waitForStart = false;
+            AudioManager.Instance?.StartOrEndWave();
             StartCoroutine(StartWave());
         }
     }
@@ -109,6 +110,10 @@ public class WaveManager : MonoBehaviour
         {
             //Debug.Log("Все волны завершены!");
             LevelManager.instance.WIN();
+        }
+        else
+        {
+            AudioManager.Instance?.StartOrEndWave();
         }
     }
 

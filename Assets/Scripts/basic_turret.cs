@@ -1,38 +1,45 @@
-using UnityEngine;
-using UnityEditor;
+Ôªøusing System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System;
+using UnityEditor;
+using UnityEngine;
+using static basic_turret;
+using static ShotgunTurret;
 
 
 public class basic_turret : MonoBehaviour
 {
 
-
     [Header("Attributes")]
-    [SerializeField] private float targetRange = 5f;
-    [SerializeField] private float angleSpeed = 1.0f;
-    [SerializeField] private float bps = 1f; // ÔÛÎÂÈ ‚ ÒÂÍÛÌ‰Û
+    [SerializeField] protected float targetRange = 5f;
+    [SerializeField] protected float angleSpeed = 1.0f;
+    [SerializeField] protected float bps = 1f; // –ø—É–ª–µ–π –≤ —Å–µ–∫—É–Ω–¥—É
 
     [Header("References")]
-    [SerializeField] private Transform turretRotationPoint;
-    [SerializeField] private LayerMask enemyMask;
-    [SerializeField] private GameObject bulletPrefab;
-    [SerializeField] private Transform firingPoint;
-    [SerializeField] private GameObject rangeView;
-    
+    [SerializeField] protected Transform turretRotationPoint;
+    [SerializeField] protected LayerMask enemyMask;
+    [SerializeField] protected GameObject bulletPrefab;
+    [SerializeField] protected Transform firingPoint;
+    [SerializeField] protected GameObject rangeView;
+
     public float Range { get { return targetRange; } set { targetRange = value; } }
     public float SpeedOfSpawn { get { return bps; } set { bps = value; } }
     public int Damage { get { return bulletDamage; } set { bulletDamage = value; } }
 
-    private int bulletDamage;
-    private Transform target;
+    protected int bulletDamage;
+    protected Transform target;
+
     private float timeUntilFire;
-    private void Awake()
+    private TargetStrategy targetStrategy;
+    public bool isChanged;
+
+    protected void Awake()
     {
         ChangeRange(targetRange);
         bulletDamage = bulletPrefab.GetComponent<bullet>().Damage;
         HideRange();
+
     }
 
     public void ChangeRange(float range)
@@ -52,12 +59,19 @@ public class basic_turret : MonoBehaviour
     }
     private void Update()
     {
+
         if (target == null)
         {
             FindTarget();
             return;
         }
-        //Debug.Log(CheckTargetForward());
+        if (isChanged)
+        {
+            isChanged = false;
+            target = null;
+            return;
+        }
+
         RotateToTarget();
         if (!CheckTargetInRange())
         {
@@ -76,36 +90,54 @@ public class basic_turret : MonoBehaviour
 
     }
 
-    private void Shoot()
+    protected void Shoot()
     {
         GameObject bulletObj = Instantiate(bulletPrefab, firingPoint.position, Quaternion.identity);
         bullet bulletScript = bulletObj.GetComponent<bullet>();
         bulletScript.SetTarget(target);
-
+        bulletScript.Damage = bulletDamage;
+        AudioManager.Instance?.PlayShootBase();
     }
 
     private void FindTarget()
     {
-        RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, targetRange, (Vector2)transform.position, 0f, enemyMask);
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(
+        transform.position, targetRange, (Vector2)transform.position, 0f, enemyMask);
 
-        if (hits.Length > 0)
+        if (hits.Length == 0)
         {
-            target = hits[0].transform;
+            target = null;
+            return;
         }
 
+        List<Transform> enemies = hits.Select(h => h.transform).ToList();
+        targetStrategy = GetComponent<Tower>().Strategy;
+
+
+
+        switch (targetStrategy)
+        {
+            case TargetStrategy.Closest:
+                target = enemies.OrderBy(e => Vector2.Distance(e.position, transform.position)).FirstOrDefault();
+                break;
+
+            case TargetStrategy.First:
+                target = target = enemies
+                    .OrderByDescending(e => e.GetComponent<Enemy>().Progress)
+                    .FirstOrDefault();
+                break;
+            case TargetStrategy.Last:
+                target = target = enemies
+                .OrderBy(e => e.GetComponent<Enemy>().Progress)
+                .FirstOrDefault();
+                break;
+        }
     }
-
-
 
 
     private bool CheckTargetInRange()
     {
-        return Vector2.Distance(target.position, transform.position) <= targetRange;
-    }
-    private bool CheckTargetForward()
-    {
-        float angle = Mathf.Atan2(target.position.y - transform.position.y, target.position.x - transform.position.x) * Mathf.Rad2Deg - 90.0f;
-        return angle <= target.rotation.z || angle > target.rotation.z;
+        return target != null && Vector2.Distance(target.position, transform.position) <= targetRange;
     }
 
     private void RotateToTarget()

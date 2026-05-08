@@ -3,6 +3,7 @@ using UnityEngine.Tilemaps;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 public class Plot : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class Plot : MonoBehaviour
     [Header("Игнорируемые UI теги")]
     public string[] ignoreUITags = { };
 
+
+    public static Plot instance { get; private set; }
     private Vector3Int lastHoveredCell;
     private Camera mainCamera;
     private Dictionary<Vector3Int, GameObject> towers;
@@ -29,6 +32,7 @@ public class Plot : MonoBehaviour
     void Start()
     {
         mainCamera = Camera.main;
+        instance = this;
         if (tilemap == null)
             tilemap = GetComponent<Tilemap>();
         towers = BuildManager.Instance.dict;
@@ -89,6 +93,8 @@ public class Plot : MonoBehaviour
         if (!IsMouseInViewport())
             return;
 
+        
+
         Vector3 mouseWorldPos = GetMouseWorldPosition();
         if (mouseWorldPos == Vector3.zero)
             return;
@@ -105,6 +111,7 @@ public class Plot : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0))
             {
+                AudioManager.Instance?.ClickOnTile();
                 hideAllRanger();
                 OnTileClick(cellPos);
             }
@@ -130,6 +137,10 @@ public class Plot : MonoBehaviour
 
             FreezeTurret ft = x?.GetComponent<FreezeTurret>();
             if (ft != null) ft.HideRange();
+
+            ShotgunTurret st = x?.GetComponent<ShotgunTurret>();
+            if(st != null) st.HideRange();
+
         }
     }
     bool IsMouseInViewport()
@@ -188,10 +199,13 @@ public class Plot : MonoBehaviour
                 FreezeTurret ft = towers[cellPos].GetComponent<FreezeTurret>();
                 if (ft != null) ft.ShowRange();
 
+                ShotgunTurret st = towers[cellPos].GetComponent<ShotgunTurret>();
+                if (st != null) st.ShowRange();
+
                 UpdateUI.ShowUpdatePanel(cellPos);
 
             }
-            return;
+            return; 
         }
 
         TowerSelectionUI selectionUI = FindFirstObjectByType<TowerSelectionUI>();
@@ -203,6 +217,22 @@ public class Plot : MonoBehaviour
         else
         {
             // Debug.LogError("TowerSelectionUI не найден на сцене!");
+        }
+    }
+    public void RemoveTower(GameObject gg)
+    {
+        Vector3Int? cellToRemove = null;
+        foreach (var kvp in towers)
+        {
+            if (kvp.Value == gg)
+            {
+                cellToRemove = kvp.Key;
+                break;
+            }
+        }
+        if (cellToRemove != null)
+        {
+            towers.Remove(cellToRemove.Value);
         }
     }
 

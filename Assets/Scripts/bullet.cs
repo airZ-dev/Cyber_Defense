@@ -14,7 +14,7 @@ public class bullet : MonoBehaviour
 
     private Transform target;
 
-    public int Damage { get { return bulletDamage; } }
+    public int Damage { get { return bulletDamage; } set { bulletDamage = value; } }
 
     public void SetTarget(Transform _target)
     {
@@ -33,7 +33,7 @@ public class bullet : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        collision.gameObject.GetComponent<Health>().TakeDamage(bulletDamage);
+        collision.gameObject.GetComponent<Health>().TakeDamage(bulletDamage, false);
         Destroy(gameObject);
     }
 }

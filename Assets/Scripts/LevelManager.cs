@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -23,11 +24,11 @@ public class LevelManager : MonoBehaviour
     {
         if (_hps != null)
             _hps.text = $"{currentHP}";
-        if(_cur != null)
+        if (_cur != null)
             _cur.text = $"{currency}";
-        if(_wav != null)
+        if (_wav != null)
         {
-            _wav.text = $"{WaveManager.instance.current_wave+1}|{WaveManager.instance.max_wave}";
+            _wav.text = $"{WaveManager.instance.current_wave + 1}|{WaveManager.instance.max_wave}";
 
         }
     }
@@ -37,26 +38,27 @@ public class LevelManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
-        currentHP= baseHP;
+        currentHP = baseHP;
     }
 
     private void Start()
     {
-        if(currency == 0)
+        if (currency == 0)
         {
-            currency = 48*2;
+            Console.WriteLine("error: currency is zero!");
         }
         isActive = true;
     }
     public void takeDamage(int amount)
     {
+        AudioManager.Instance?.PlayHitBase();
         currentHP -= amount;
         if (currentHP < 0)
         {
             currentHP = 0;
         }
         //_hp.fillAmount = currentHP * 1.0f / baseHP;
-        if(currentHP == 0)
+        if (currentHP == 0)
         {
             DEATH();
             return;
@@ -65,18 +67,29 @@ public class LevelManager : MonoBehaviour
     private void DEATH()
     {
         if (WinOrLossMenu.instance != null)
+        {
+            AudioManager.Instance?.PlayGameOver();
+            AudioManager.Instance?.PauseMusic(true);
             WinOrLossMenu.instance.winOrLoseWindowShow(false);
+        }
+
     }
 
     public void WIN()
     {
         if (WinOrLossMenu.instance != null)
+        {
+            AudioManager.Instance?.PlayVictory();
+            AudioManager.Instance?.PauseMusic(true);
             WinOrLossMenu.instance.winOrLoseWindowShow(true);
+        }
+        
     }
 
     public void IncreaseCurrency(int amount)
     {
         currency += amount;
+        AudioManager.Instance?.PlayCurrency();
     }
 
     public bool SpendCurrency(int amount)
