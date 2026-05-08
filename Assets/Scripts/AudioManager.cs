@@ -7,6 +7,9 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance { get; private set; }
 
+    private const string MUSIC_VOLUME_KEY = "AudioManager_MusicVolume";
+    private const string SFX_VOLUME_KEY = "AudioManager_SFXVolume";
+
     [Header("Music")]
     [SerializeField] private AudioClip backgroundMusic;
     [SerializeField][UnityEngine.Range(0f, 1f)] private float musicVolume = 0.5f;
@@ -43,13 +46,10 @@ public class AudioManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-           // DontDestroyOnLoad(gameObject);
+            // DontDestroyOnLoad(gameObject);
             InitAudioSources();
+            LoadVolumeSettings();
         }
-        //else
-        //{
-        //    Destroy(gameObject);
-        //}
 
         if(defaultButtons != null && defaultButtons.Length > 0)
         {
@@ -88,6 +88,27 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    private void LoadVolumeSettings()
+    {
+        // Если есть сохранённое значение — используем его, иначе оставляем значение из инспектора
+        if (PlayerPrefs.HasKey(MUSIC_VOLUME_KEY))
+            musicVolume = PlayerPrefs.GetFloat(MUSIC_VOLUME_KEY);
+        if (PlayerPrefs.HasKey(SFX_VOLUME_KEY))
+            sfxVolume = PlayerPrefs.GetFloat(SFX_VOLUME_KEY);
+
+        // Применяем к источникам (они уже созданы в InitAudioSources)
+        if (musicSource != null) musicSource.volume = musicVolume;
+        if (sfxSource != null) sfxSource.volume = sfxVolume;
+    }
+
+    // Сохранение текущих настроек
+    private void SaveVolumeSettings()
+    {
+        PlayerPrefs.SetFloat(MUSIC_VOLUME_KEY, musicVolume);
+        PlayerPrefs.SetFloat(SFX_VOLUME_KEY, sfxVolume);
+        PlayerPrefs.Save(); // сразу записываем на диск
+    }
+
     // Воспроизведение звука (один выстрел)
     public void PlaySFX(AudioClip clip)
     {
@@ -107,6 +128,7 @@ public class AudioManager : MonoBehaviour
     {
         musicVolume = Mathf.Clamp01(volume);
         if (musicSource != null) musicSource.volume = musicVolume;
+        SaveVolumeSettings();
     }
 
     // Установка громкости звуков
@@ -114,6 +136,7 @@ public class AudioManager : MonoBehaviour
     {
         sfxVolume = Mathf.Clamp01(volume);
         if (sfxSource != null) sfxSource.volume = sfxVolume;
+        SaveVolumeSettings();
     }
 
     // Переключение паузы музыки (для паузы игры)

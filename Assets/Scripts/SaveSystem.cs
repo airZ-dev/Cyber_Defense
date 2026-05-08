@@ -19,7 +19,7 @@ public class SaveSystem : MonoBehaviour
         formatter.Serialize(stream, data);
         stream.Close();
 
-        Debug.Log($"Сохранено. Разблокировано уровней: {maxUnlockedLevel}");
+        //Debug.Log($"Сохранено. Разблокировано уровней: {maxUnlockedLevel}");
     }
 
     public static int LoadProgress()
@@ -34,18 +34,18 @@ public class SaveSystem : MonoBehaviour
                 SaveData data = formatter.Deserialize(stream) as SaveData;
                 stream.Close();
 
-                Debug.Log($"Загружено. Разблокировано уровней: {data.maxUnlockedLevel}");
+                //Debug.Log($"Загружено. Разблокировано уровней: {data.maxUnlockedLevel}");
                 return data.maxUnlockedLevel;
             }
             catch
             {
-                Debug.Log("Ошибка загрузки сохранения");
+                //Debug.Log("Ошибка загрузки сохранения");
                 return 1;
             }
         }
         else
         {
-            Debug.Log("Файл сохранения не найден");
+            //Debug.Log("Файл сохранения не найден");
             return 1;
         }
     }
