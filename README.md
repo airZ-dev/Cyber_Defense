@@ -22,13 +22,11 @@
 ---
 ## Скриншоты
 
-| <img width="1920" height="1080" alt="Pasted image 20260508204933" src="https://github.com/user-attachments/assets/a3244271-5b61-4975-9b35-6d0e7e75839a" />
- | <img width="1920" height="1080" alt="Pasted image 20260508205036" src="https://github.com/user-attachments/assets/8fb8b365-9ee0-4c6c-9d09-f616eac0e915" />
- |
-| ----------------------------------------- | ----------------------------------------- |
-| <img width="1347" height="595" alt="Pasted image 20260508205136" src="https://github.com/user-attachments/assets/c13a3660-e838-4706-b1a4-96b9c44b517a" />
- | <img width="1076" height="605" alt="Pasted image 20260508205232" src="https://github.com/user-attachments/assets/e8c22123-ec0c-473e-8302-e5c8e3e10e50" />
- |
+ <img width="1920" height="1080" alt="Pasted image 20260508204933" src="https://github.com/user-attachments/assets/a3244271-5b61-4975-9b35-6d0e7e75839a" />
+  <img width="1920" height="1080" alt="Pasted image 20260508205036" src="https://github.com/user-attachments/assets/8fb8b365-9ee0-4c6c-9d09-f616eac0e915" />
+ 
+ <img width="1347" height="595" alt="Pasted image 20260508205136" src="https://github.com/user-attachments/assets/c13a3660-e838-4706-b1a4-96b9c44b517a" />
+  <img width="1076" height="605" alt="Pasted image 20260508205232" src="https://github.com/user-attachments/assets/e8c22123-ec0c-473e-8302-e5c8e3e10e50" />
 
 ---
 ## Управление
